@@ -1,0 +1,6 @@
+int32 request
+int32 a
+int32 b
+
+---
+string response

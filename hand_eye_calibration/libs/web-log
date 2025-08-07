@@ -1,0 +1,325 @@
+2025-06-17 16:51:28 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 16:51:28 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 16:51:29 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 16:51:29 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 16:51:30 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 16:51:30 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 16:51:31 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 16:51:31 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 16:51:32 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 16:51:32 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 16:51:33 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 16:51:33 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 16:51:34 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 16:51:34 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 16:51:35 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 16:55:10 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 16:55:11 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 16:55:11 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 16:55:12 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 16:55:12 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 16:55:13 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 16:55:13 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 16:55:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 16:55:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 16:55:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 16:55:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 16:55:16 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 16:55:16 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 16:55:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 16:55:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 16:56:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 16:56:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 16:59:01 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 16:59:02 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 16:59:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 16:59:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 16:59:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 16:59:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 16:59:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 16:59:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 16:59:52 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 16:59:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 16:59:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 16:59:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 17:05:50 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 17:05:51 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:08:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 17:08:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 17:08:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 17:08:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 17:08:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 17:08:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 17:08:19 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:13:43 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 17:13:44 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 17:13:45 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 17:13:45 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 17:13:45 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 17:13:45 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 17:16:14 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:16:15 - __main__ - INFO: 旋转矩阵是:
+ [[ 0.05619627  0.05991489  0.99662038]
+ [-0.07614641 -0.99503328  0.06411313]
+ [ 0.99551178 -0.07949199 -0.05135485]]
+2025-06-17 17:16:15 - __main__ - INFO: 平移向量是:
+ [[ 0.11228876]
+ [-0.16557473]
+ [-0.09468007]]
+2025-06-17 17:16:15 - __main__ - INFO: 四元数是：
+ [ 0.72501455 -0.00559697  0.68692834 -0.04951801]
+2025-06-17 17:26:20 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 17:26:20 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 17:26:21 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 17:26:22 - __main__ - INFO: 旋转矩阵是:
+ [[ 0.04205621  0.0202342   0.99891033]
+ [-0.1034163  -0.99433648  0.0244956 ]
+ [ 0.99374863 -0.1043338  -0.03972548]]
+2025-06-17 17:26:22 - __main__ - INFO: 平移向量是:
+ [[ 0.08589616]
+ [-0.16534466]
+ [-0.10202788]]
+2025-06-17 17:26:22 - __main__ - INFO: 四元数是：
+ [ 0.72043705 -0.02886515  0.69147574 -0.04470529]
+2025-06-17 18:26:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 18:26:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 18:26:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 18:26:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 18:26:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 18:26:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 18:26:06 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 18:26:06 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 18:26:06 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 18:26:06 - __main__ - INFO: 旋转矩阵是:
+ [[ 0.95622375 -0.27680545 -0.0949468 ]
+ [ 0.18918698  0.83227946 -0.52107503]
+ [ 0.22325868  0.48030162  0.84821337]]
+2025-06-17 18:26:06 - __main__ - INFO: 平移向量是:
+ [[ 0.17372685]
+ [-0.12673722]
+ [ 0.27059239]]
+2025-06-17 18:26:06 - __main__ - INFO: 四元数是：
+ [ 0.26255043 -0.08343013  0.12217832  0.95350886]
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 19:45:03 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 19:45:04 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 19:45:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 19:45:05 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 19:45:05 - __main__ - INFO: 旋转矩阵是:
+ [[-0.0167581   0.01425494  0.99975795]
+ [-0.03177088 -0.99940104  0.0137173 ]
+ [ 0.99935468 -0.03153332  0.01720096]]
+2025-06-17 19:45:05 - __main__ - INFO: 平移向量是:
+ [[ 0.10724379]
+ [-0.19337154]
+ [-0.12712582]]
+2025-06-17 19:45:05 - __main__ - INFO: 四元数是：
+ [ 0.70097111 -0.00624703  0.71297968 -0.01613855]
+2025-06-17 19:55:36 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 19:55:36 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 19:55:36 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 19:55:36 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 19:55:36 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 19:55:37 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 19:55:38 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 19:55:38 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 19:55:38 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 19:55:39 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 19:55:39 - __main__ - INFO: 旋转矩阵是:
+ [[ 0.86474196 -0.34623148  0.36379267]
+ [ 0.00724131  0.73289483  0.68030342]
+ [-0.50216422 -0.58565258  0.63627208]]
+2025-06-17 19:55:39 - __main__ - INFO: 平移向量是:
+ [[ 0.31328172]
+ [-0.22462729]
+ [ 0.23475082]]
+2025-06-17 19:55:39 - __main__ - INFO: 四元数是：
+ [-0.35198546  0.24077001  0.09827931  0.89915361]
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 19:56:53 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 19:56:54 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 19:56:55 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 19:56:55 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 19:56:56 - __main__ - INFO: 旋转矩阵是:
+ [[ 0.86474196 -0.34623148  0.36379267]
+ [ 0.00724131  0.73289483  0.68030342]
+ [-0.50216422 -0.58565258  0.63627208]]
+2025-06-17 19:56:56 - __main__ - INFO: 平移向量是:
+ [[ 0.31328172]
+ [-0.22462729]
+ [ 0.23475082]]
+2025-06-17 19:56:56 - __main__ - INFO: 四元数是：
+ [-0.35198546  0.24077001  0.09827931  0.89915361]
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/1.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/2.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/3.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/4.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/5.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/6.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/7.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/8.jpg
+2025-06-17 20:06:17 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/9.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/10.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/11.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/12.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/13.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/14.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/15.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/16.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/17.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/18.jpg
+2025-06-17 20:06:18 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/19.jpg
+2025-06-17 20:06:19 - __main__ - INFO: 读 /home/whc/aiui_ws/calib_data/20250617/20.jpg
+2025-06-17 20:06:19 - __main__ - INFO: 旋转矩阵是:
+ [[-0.01422524  0.05099519  0.99859758]
+ [-0.05878516 -0.99701385  0.05007691]
+ [ 0.9981693  -0.05799036  0.01718052]]
+2025-06-17 20:06:19 - __main__ - INFO: 平移向量是:
+ [[ 0.10426014]
+ [-0.19376714]
+ [-0.11976516]]
+2025-06-17 20:06:19 - __main__ - INFO: 四元数是：
+ [ 0.70100073 -0.00277816  0.71211298 -0.03854036]

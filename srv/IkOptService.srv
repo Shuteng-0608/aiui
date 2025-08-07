@@ -1,0 +1,8 @@
+int32 arm_id
+float64[7] target_pq
+string action
+---
+string response
+float64[7] target_joint_ana
+float64[7] target_joint_num
+# IkOptService.srv

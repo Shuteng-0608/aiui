@@ -1,0 +1,9 @@
+
+---
+bool ros_status
+
+bool ros_run_flag
+string ros_cmd
+
+bool aris_run_flag
+string aris_cmd
