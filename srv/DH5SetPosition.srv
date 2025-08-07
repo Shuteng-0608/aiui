@@ -1,0 +1,20 @@
+string hand_type        # 'right' or 'left' or 'both'
+string hand_mode        # 'hand' or 'gripper'
+string gripper_state    # 'open' or 'close'
+
+int16[] right_position_list   # Array of 6 position values
+int16[] right_axis_list       # Array of 6 axis values
+int16[] right_force_list      # Array of 6 force values
+int16[] right_speed_list      # Array of 6 velocity values
+int16[] right_acc_list        # Array of 6 acceleration values
+
+int16[] left_position_list   # Array of 6 position values
+int16[] left_axis_list       # Array of 6 axis values
+int16[] left_force_list      # Array of 6 force values
+int16[] left_speed_list      # Array of 6 velocity values
+int16[] left_acc_list        # Array of 6 acceleration values
+---
+int8 result             # 0 for success, -1 for failure
+
+
+# TODO: Add more detailed code

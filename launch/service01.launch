@@ -1,0 +1,51 @@
+<launch>
+    <!-- 设置 ROS 主节点参数 -->
+    <env name="ROS_MASTER_URI" value="http://localhost:8888" />
+    <env name="ROS_HOSTNAME" value="localhost" />
+
+    <!-- 启动 TTS PLAYER 节点 -->
+    <node 
+        pkg="aiui" 
+        type="tts_test.py" 
+        name="tts_player_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 TTS GENERATOR 节点 -->
+    <node 
+        pkg="aiui" 
+        type="tts_test.py" 
+        name="tts_generator_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 VLM 节点 -->
+    <node 
+        pkg="aiui" 
+        type="vlm_service_node.py"
+        name="vlm_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 DH5 节点 -->
+    <node 
+        pkg="aiui" 
+        type="dh5_control_ros.py"
+        name="dh5_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 VLA 节点 - 在单独的 Terminator 终端 (修复版本) -->
+    <node 
+        pkg="aiui" 
+        type="vla_service_node.py"
+        name="vla_service_node" 
+        launch-prefix="bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash &amp;&amp; source $HOME/aiui_ws/devel/setup.bash &amp;&amp; terminator -T &quot;VLA Node&quot; --geometry=1000x600+500+100 -e &quot;export ROS_MASTER_URI=http://localhost:8888; export ROS_HOSTNAME=localhost; source /opt/ros/$ROS_DISTRO/setup.bash &amp;&amp; source $HOME/aiui_ws/devel/setup.bash &amp;&amp; rosrun aiui vla_service_node.py; echo; read -p \&quot;Press Enter to close...\&quot;&quot;'"
+        output="log"
+    />
+    
+    <!-- 启动 OrbbecSDK_ROS1 节点 -->
+    <include file="$(find orbbec_camera)/launch/gemini_330_series.launch"/>
+
+    <!-- 启动 AIUI 主入口结点 -->
+</launch>
