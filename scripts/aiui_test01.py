@@ -385,7 +385,7 @@ class SocketDemo(Thread):
 
     def handle_detected_intent(self, intent):
         
-        self.intent_state = True  # 重置意图状态
+        self.intent_state = False  # 重置意图状态
         rospy.loginfo(f"意图状态: {self.intent_state}")
         
         if intent == "SayHi":
