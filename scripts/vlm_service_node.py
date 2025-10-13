@@ -9,6 +9,7 @@ import requests
 import base64
 import ast
 import cv2
+import re
 
 class VLMServiceServer:
     def __init__(self):
@@ -19,6 +20,31 @@ class VLMServiceServer:
         # 初始化服务
         self.service = rospy.Service('vlm_service', VLMProcess, self.handle_vlm_request)
         rospy.loginfo("VLM Service Server is ready")
+
+    def clean_text(self, text):
+        """
+        去除文本中的换行符、从**符号到：符号的内容，以及数字序号（如1. 2. 3.）
+        
+        参数:
+            text (str): 需要处理的文本
+            
+        返回:
+            str: 处理后的文本
+        """
+        # 去除换行符
+        text = text.replace('\n', ' ')
+        
+        # 使用正则表达式去除**到：之间的内容
+        pattern = r'\*\*.*?：'
+        text = re.sub(pattern, '', text)
+        
+        # 去除数字序号（如1. 2. 3.）
+        text = re.sub(r'\d+\.', '', text)
+        
+        # 去除多余的空格
+        text = ' '.join(text.split())
+        
+        return text
 
     def handle_vlm_request(self, req):
         """仅在服务调用时订阅一帧图像"""
@@ -51,6 +77,8 @@ class VLMServiceServer:
                 # 安全解析返回结果
                 try:
                     parsed_result = ast.literal_eval(result) if isinstance(result, str) else result
+                    parsed_result = self.clean_text(str(parsed_result))
+                    # rospy.loginfo(parsed_result)
                 except:
                     parsed_result = str(result)
                 return VLMProcessResponse(str(parsed_result))

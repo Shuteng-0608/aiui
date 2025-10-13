@@ -385,7 +385,7 @@ class SocketDemo(Thread):
 
     def handle_detected_intent(self, intent):
         
-        self.intent_state = False  # 重置意图状态
+        self.intent_state = True  # 重置意图状态
         rospy.loginfo(f"意图状态: {self.intent_state}")
         
         if intent == "SayHi":
@@ -533,15 +533,19 @@ class SocketDemo(Thread):
             rospy.loginfo(f"大模型回答结果是: {text_value}  {status_value}")
         # 状态0: 新响应开始
         if status_value == 0:
+            rospy.loginfo(f"新响应开始, 状态0")
             self.seen_status_0 = True  # 标记已见过状态0
             if self.intent_state == True:
                 self.seen_status_0 = False  # 假装没有看见
+                rospy.loginfo("意图状态, 忽略状态0")
             else:
                 self.flush_all()  # 清空之前的缓冲区
+                rospy.loginfo("清空缓冲区，开始新响应")
                 self.sentence_buffer.append_text(text_value)
 
         # 状态1: 中间段落
         elif status_value == 1:
+            rospy.loginfo(f"中间段落, 状态1")
             if self.intent_state == True:
                 self.seen_status_0 = False  # 重置状态标志
             if  self.seen_status_0:
@@ -549,10 +553,14 @@ class SocketDemo(Thread):
 
         # 状态2: 最终段落
         elif status_value == 2:
+            rospy.loginfo(f"最终段落, 状态2")
             if self.seen_status_0:
                 self.sentence_buffer.append_text(text_value)
                 self.seen_status_0 = False  # 重置状态标志
-            elif self.detected_intent == "WHATTIME" or self.openQA or self.intent_state == True:
+            # elif self.detected_intent == "WHATTIME" or self.openQA or self.intent_state == True:
+            elif self.detected_intent == "WHATTIME" or self.openQA:
+                rospy.loginfo("最终段落，意图状态或开放式问答，追加文本")
+                rospy.loginfo(f"生效的意图: {self.detected_intent}" )
                 self.flush_all()
                 self.sentence_buffer.append_text(text_value)
                 self.openQA = False
@@ -594,7 +602,7 @@ class SocketDemo(Thread):
     def get_intent_result(self, data):
         text_value = data.get('content', {}).get(
             'result', {}).get('cbm_semantic', {}).get('text')
-        rospy.loginfo(f"技能 text_value: {text_value} ")
+        # rospy.loginfo(f"技能 text_value: {text_value} ")
         intent = json.loads(text_value)
         rc = intent['rc']
         if (rc == 0):
@@ -619,7 +627,7 @@ class SocketDemo(Thread):
             rospy.logwarn(f"无意图: {str(e)}")
         if self.detected_intent:
             rospy.loginfo(f"成功提取意图: {self.detected_intent}")
-            self.intent_state = True  # 重置意图状态
+            self.intent_state = False  # 重置意图状态
             if self.detected_intent == "vla":
                 try:
                     self.vla_text = parsed_data.get('text', "")
