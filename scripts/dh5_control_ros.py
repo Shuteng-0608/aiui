@@ -432,7 +432,7 @@ class DH5ModbusAPI:
     def err_comp(self, right, gain_err=None):
         """误差补偿"""
         if gain_err is None:
-            gain_err = [4, 0, 24, -30, 40, -43]
+            gain_err = [36, -46, -21, -6, 1, -143]
         gain_left = [0, 0, 0, 0, 0, 0]
         for i in range(len(right)):
             gain_left[i] = gain_err[i] + right[i]
@@ -576,12 +576,12 @@ if __name__ == '__main__':
     rospy.loginfo(api_l.initialize(0b10))
     rospy.loginfo(api_l.check_initialization())
     position_limits_left = [
-        [30, 934],
-        [10, 1771],
-        [30, 1731],
-        [30, 1701],
-        [10, 1771],
-        [30, 938],
+        [0, 966],
+        [0, 1725],
+        [0, 1686],
+        [0, 1725],
+        [0, 1732],
+        [0, 838],
     ]
 
     #### Right Hand Initialization #### ttyUSB0
