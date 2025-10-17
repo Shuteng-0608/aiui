@@ -53,6 +53,8 @@ class SocketDemo(Thread):
         self.detected_intent = None
         self.tts_text = ""
         self.wakeup_state = False
+        self.start_time = 0
+        self.end_time = 0
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)
@@ -74,12 +76,13 @@ class SocketDemo(Thread):
         self.audio_lock = Lock()  # 音频锁确保连续播放
         self.active_audio_channel = None
         self.current_audio_stream = None
+        self.active_audio_file = None
         # 启动TTS和音频处理线程
         
         Thread(target=self.process_tts_queue, daemon=True).start()
         Thread(target=self.play_audio_from_queue, daemon=True).start()
         # 创建句子缓冲区
-        self.sentence_buffer = SentenceBuffer(min_sentence_length=2, max_sentence_length=10)
+        self.sentence_buffer = SentenceBuffer(min_sentence_length=2, max_sentence_length=30)
         
         # 启动句子处理线程
         self.sentence_processing_thread = Thread(target=self.process_sentences, daemon=True)
@@ -88,33 +91,90 @@ class SocketDemo(Thread):
 
     def flush_all(self):
         """清空所有队列和缓冲区，删除相关音频文件"""
+        # 清空文本缓冲区并添加到TTS队列
         with self.sentence_buffer.lock:
-            # 清空文本缓冲区
             if self.sentence_buffer.buffer:
                 self.tts_queue.put(self.sentence_buffer.buffer)
                 self.sentence_buffer.buffer = ""
+        
+        # 清空TTS队列
+        flushed_texts = []
+        while not self.tts_queue.empty():
+            try:
+                text = self.tts_queue.get_nowait()
+                if text:
+                    flushed_texts.append(text)
+            except queue.Empty:
+                break
+        
+        if flushed_texts:
+            rospy.loginfo(f"清空TTS队列中的文本: {', '.join(flushed_texts)}")
+        
+        # 清空音频队列并删除文件
+        audio_files_to_delete = []
+        while not self.audio_queue.empty():
+            try:
+                audio_path = self.audio_queue.get_nowait()
+                if audio_path:
+                    audio_files_to_delete.append(audio_path)
+            except queue.Empty:
+                break
+        
+        # 删除所有音频文件
+        for audio_path in audio_files_to_delete:
+            try:
+                if os.path.exists(audio_path):
+                    os.remove(audio_path)
+                    rospy.loginfo(f"已删除临时文件: {audio_path}")
+                else:
+                    rospy.logwarn(f"文件不存在: {audio_path}")
+            except Exception as e:
+                rospy.logwarn(f"删除临时文件失败: {e}")
+        
+        # 停止当前播放并删除当前播放文件（如果有）
+        with self.audio_lock:
+            if pygame.mixer.music.get_busy():
+                pygame.mixer.music.stop()
             
-            # 清空TTS队列
-            while not self.tts_queue.empty():
+            # 如果当前有正在播放的文件，删除它
+            if hasattr(self, 'current_playing_file') and self.current_playing_file:
                 try:
-                    text = self.tts_queue.get_nowait()
-                    if text:
-                        rospy.loginfo(f"清空TTS队列中的文本: {text}")
-                except queue.Empty:
-                    break
+                    if os.path.exists(self.current_playing_file):
+                        os.remove(self.current_playing_file)
+                        rospy.loginfo(f"已删除当前播放文件: {self.current_playing_file}")
+                    self.current_playing_file = None
+                except Exception as e:
+                    rospy.logwarn(f"删除当前播放文件失败: {e}")
+
+    # def flush_all(self):
+    #     """清空所有队列和缓冲区，删除相关音频文件"""
+    #     with self.sentence_buffer.lock:
+    #         # 清空文本缓冲区
+    #         if self.sentence_buffer.buffer:
+    #             self.tts_queue.put(self.sentence_buffer.buffer)
+    #             self.sentence_buffer.buffer = ""
             
-            while not self.audio_queue.empty():
-                try:
-                    # 获取队列中的音频文件路径
-                    audio_path = self.audio_queue.get_nowait()
-                    try:
-                        os.remove(audio_path)
-                        rospy.loginfo(f"已删除临时文件: {audio_path}")
-                    except Exception as e:
-                        rospy.logwarn(f"删除临时文件失败: {e}")
+    #         # 清空TTS队列
+    #         while not self.tts_queue.empty():
+    #             try:
+    #                 text = self.tts_queue.get_nowait()
+    #                 if text:
+    #                     rospy.loginfo(f"清空TTS队列中的文本: {text}")
+    #             except queue.Empty:
+    #                 break
+            
+    #         while not self.audio_queue.empty():
+    #             try:
+    #                 # 获取队列中的音频文件路径
+    #                 audio_path = self.audio_queue.get_nowait()
+    #                 try:
+    #                     os.remove(audio_path)
+    #                     rospy.loginfo(f"已删除临时文件: {audio_path}")
+    #                 except Exception as e:
+    #                     rospy.logwarn(f"删除临时文件失败: {e}")
                     
-                except queue.Empty:
-                    break
+    #             except queue.Empty:
+    #                 break
 
     # 处理TTS队列的线程函数
     def process_tts_queue(self):
@@ -157,6 +217,7 @@ class SocketDemo(Thread):
                 # 将音频文件加入播放队列
                 if filename:
                     self.audio_queue.put(filename)
+
             except queue.Empty:
                 continue
             except Exception as e:
@@ -164,6 +225,8 @@ class SocketDemo(Thread):
     
     # 音频播放线程函数
     def play_audio_from_queue(self):
+        # self.end_time = time.time()
+        # print(f"音频播报延时 {self.end_time - self.start_time:.2f} 秒")
 
         while not self.stop_event.is_set():
             try:
@@ -174,6 +237,8 @@ class SocketDemo(Thread):
                 with self.audio_lock:
                     # 如果有当前在播放的音频，等待其结束
                     if pygame.mixer.music.get_busy():
+                        # self.end_time = time.time()
+                        # print(f"音频播报延时 {self.end_time - self.start_time:.2f} 秒")
                         # 设置混合器事件监听
                         BUSY_EVENT = pygame.USEREVENT + 1
                         pygame.mixer.music.set_endevent(BUSY_EVENT)
@@ -310,10 +375,14 @@ class SocketDemo(Thread):
             status_value = 1
         result_string = ''.join(words)
         if status_value == 0:
-            rospy.loginfo(f"新识别开始, 状态0")
+            # rospy.loginfo(f"新识别开始, 状态0")
             self.flush_all()  # 清空之前的缓冲区
         if (result_string != "" or status_value == 2):
+            # pass
             rospy.loginfo(f"识别结果是: {result_string} {status_value}")
+        # if (status_value == 2):
+        #     # pass
+        #     rospy.loginfo(f"识别结果是: {result_string} {status_value}")
 
 
     # def labTour(self, start, end):
@@ -404,7 +473,7 @@ class SocketDemo(Thread):
 
         elif intent == "handshake":
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行握手动作")
-            self.sentence_buffer.append_text("好呀，和我握个手吧，很高兴认识你，我还想再多和你交流交流呢！")
+            self.sentence_buffer.append_text("好呀，很高兴认识你，我还想再多和你交流交流呢！")
             req = StringServiceRequest()
             req.request = 4 # TODO
             # self.arm_client.wait_for_service()
@@ -431,13 +500,16 @@ class SocketDemo(Thread):
 
  
         elif intent == "Nod":
+
             print(f"检测到 [{intent}] 意图, 执行点头动作")
-            self.sentence_buffer.append_text("我叫南科盘古，")
-            self.sentence_buffer.append_text("我是南方科技大学机器人研究院研发的第一款人形机器人，")
-            self.sentence_buffer.append_text("我可以做一些简单的交互动作，")
-            self.sentence_buffer.append_text("还可以陪你闲聊散心,")
-            self.sentence_buffer.append_text("另外我还是实验室的科研小助手，")
-            self.sentence_buffer.append_text("想知道今天的天气也可以问我哦！")
+            self.sentence_buffer.append_text("我是南科盘古，")
+
+            self.sentence_buffer.append_text("由南方科技大学机器人研究院研发的首款人形机器人，")
+            self.sentence_buffer.append_text("也是深圳地区首个完全由高校独立研制的人形机器人，")
+            self.sentence_buffer.append_text("我具有高度拟人化的手臂,")
+            self.sentence_buffer.append_text("搭载多模态大模型，")
+            self.sentence_buffer.append_text("能够进行多模式智能交互，")
+            self.sentence_buffer.append_text("很高兴认识您！")
             
             # req = StringServiceRequest()
             # req.request = '2' # TODO
@@ -535,22 +607,23 @@ class SocketDemo(Thread):
             'result', {}).get('nlp', {}).get('status')
 
         if text_value is not None and status_value is not None:
+            # pass
             rospy.loginfo(f"大模型回答结果是: {text_value}  {status_value}")
         # 状态0: 新响应开始
         if status_value == 0:
-            rospy.loginfo(f"新响应开始, 状态0")
+            # rospy.loginfo(f"新响应开始, 状态0")
             self.seen_status_0 = True  # 标记已见过状态0
             if self.intent_state == True:
                 self.seen_status_0 = False  # 假装没有看见
-                rospy.loginfo("意图状态, 忽略状态0")
+                # rospy.loginfo("意图状态, 忽略状态0")
             else:
                 self.flush_all()  # 清空之前的缓冲区
-                rospy.loginfo("清空缓冲区，开始新响应")
+                # rospy.loginfo("清空缓冲区，开始新响应")
                 self.sentence_buffer.append_text(text_value)
 
         # 状态1: 中间段落
         elif status_value == 1:
-            rospy.loginfo(f"中间段落, 状态1")
+            # rospy.loginfo(f"中间段落, 状态1")
             if self.intent_state == True:
                 self.seen_status_0 = False  # 重置状态标志
             if  self.seen_status_0:
@@ -558,14 +631,14 @@ class SocketDemo(Thread):
 
         # 状态2: 最终段落
         elif status_value == 2:
-            rospy.loginfo(f"最终段落, 状态2")
+            # rospy.loginfo(f"最终段落, 状态2")
             if self.seen_status_0:
                 self.sentence_buffer.append_text(text_value)
                 self.seen_status_0 = False  # 重置状态标志
             # elif self.detected_intent == "WHATTIME" or self.openQA or self.intent_state == True:
             elif self.detected_intent == "WHATTIME" or self.openQA:
-                rospy.loginfo("最终段落，意图状态或开放式问答，追加文本")
-                rospy.loginfo(f"生效的意图: {self.detected_intent}" )
+                # rospy.loginfo("最终段落，意图状态或开放式问答，追加文本")
+                # rospy.loginfo(f"生效的意图: {self.detected_intent}" )
                 self.flush_all()
                 self.sentence_buffer.append_text(text_value)
                 self.openQA = False
@@ -576,7 +649,7 @@ class SocketDemo(Thread):
                 # 如果是 intent-activated 状态，直接清空缓冲区
                 # self.flush_all()
                 self.intent_state = False
-                rospy.loginfo("意图状态已重置")
+                # rospy.loginfo("意图状态已重置")
             
             self.seen_status_0 = False
 
@@ -596,10 +669,13 @@ class SocketDemo(Thread):
                 continue
                 
             # 处理句子 - 发送到 TTS
+            self.end_time = time.time()
             self.tts_queue.put(sentence)
+
+            
             
             # 记录日志
-            rospy.loginfo(f"合成句子: {sentence}")       
+            # rospy.loginfo(f"合成句子: {sentence}")       
             
         
             
@@ -612,7 +688,7 @@ class SocketDemo(Thread):
         rc = intent['rc']
         if (rc == 0):
             category = intent.get('category', "")
-            rospy.loginfo(f"技能结果: {category} ")
+            # rospy.loginfo(f"技能结果: {category} ")
         parsed_data = json.loads(text_value)
         if not isinstance(parsed_data, dict):
             rospy.logerr("解析后的数据不是字典格式")
@@ -631,12 +707,12 @@ class SocketDemo(Thread):
             self.detected_intent = None
             rospy.logwarn(f"无意图: {str(e)}")
         if self.detected_intent:
-            rospy.loginfo(f"成功提取意图: {self.detected_intent}")
+            # rospy.loginfo(f"成功提取意图: {self.detected_intent}")
             self.intent_state = False  # 重置意图状态
             if self.detected_intent == "vla":
                 try:
                     self.vla_text = parsed_data.get('text', "")
-                    rospy.loginfo(f"技能 VLA 文本: {self.vla_text} ")
+                    # rospy.loginfo(f"技能 VLA 文本: {self.vla_text} ")
                 except (IndexError, AttributeError, TypeError, KeyError) as e:
                     self.vla_text = ""
                     rospy.logwarn(f"语义 VLA 解析小异常: {str(e)}")
@@ -644,7 +720,7 @@ class SocketDemo(Thread):
             if self.detected_intent == "vlm":
                 try:
                     self.vlm_text = parsed_data.get('semantic', {})[0].get('template', "")
-                    rospy.loginfo(f"技能 VLM 文本: {self.vlm_text} ")
+                    # rospy.loginfo(f"技能 VLM 文本: {self.vlm_text} ")
                 
                 except (IndexError, AttributeError, TypeError, KeyError) as e:
                     self.vlm_text = ""
@@ -671,7 +747,7 @@ class SocketDemo(Thread):
             self.client_socket.settimeout(3)  # 设置接收超时
             recv_data = self.receive_full_data(7)
             if not recv_data:
-                rospy.loginfo("No data received. Reconnecting...")
+                # rospy.loginfo("No data received. Reconnecting...")
                 self.connected_event.clear()
                 self.connect()
                 return
@@ -709,11 +785,11 @@ class SocketDemo(Thread):
                         self.aiui_type = ""
                         data = json.loads(result)
                         self.get_aiui_type(data)
-                        print(f"AIUI message processed successfully: {result.decode('utf-8')}")
+                        # print(f"AIUI message processed successfully: {result.decode('utf-8')}")
 
                         if data.get('content', {}).get('eventType', {}) == 5:
                             self.wakeup_state = False
-                            rospy.loginfo(f"唤醒结束：==== 我不在 ==== ")
+                            # rospy.loginfo(f"唤醒结束：==== 我不在 ==== ")
                             self.flush_all()  # 清空之前的缓冲区
                             self.sentence_buffer.append_text("我先退下啦！")
                             
@@ -722,16 +798,21 @@ class SocketDemo(Thread):
                             rospy.loginfo(f"检测到唤醒词")
                             if self.wakeup_state == False:
                                 self.wakeup_state = True
-                                rospy.loginfo(f"唤醒成功：==== 我在 ==== ")
+                                # rospy.loginfo(f"唤醒成功：==== 我在 ==== ")
                                 self.flush_all()  # 清空之前的缓冲区
                                 self.sentence_buffer.append_text("我在！")
                                 
                             
                         if (self.aiui_type == "iat"):
                             self.get_iat_result(data)
+                            self.start_time = time.time()
+                            print(f"IAT 处理开始 {self.start_time}")
+
 
                         elif (self.aiui_type == "nlp"):
                             self.get_nlp_result(data)
+                            self.end_time = time.time()
+                            print(f"NLP 处理时间: {self.end_time - self.start_time:.2f} 秒")
 
                         elif (self.aiui_type == "cbm_semantic"):
                             # pass
