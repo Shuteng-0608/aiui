@@ -169,6 +169,8 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/aiui_ros.py
+  scripts/aiui_dev.py
+  scripts/tts_time_test.py
   scripts/aiui_tts_service_node.py
   scripts/vlm_service_node.py
   scripts/vla_service_node.py
