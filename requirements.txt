@@ -1,0 +1,41 @@
+# =================================
+# 系统级依赖包版本信息
+# =================================
+# 记录日期: 2024-01-15
+# 系统: Ubuntu
+# 架构: amd64
+# =================================
+# pip install -r requirements.txt
+# =====================
+
+# ====================
+#       相机依赖
+# ====================
+libeigen3-dev==3.3.7-2
+libgflags-dev==2.2.2-1build1
+libgoogle-glog-dev==0.4.0-1build1
+libusb-1.0-0-dev==2:1.0.23-2build1
+# ros-${ROS_DISTRO}-image-geometry
+# ros-${ROS_DISTRO}-camera-info-manager  
+# ros-${ROS_DISTRO}-image-transport
+# ros-${ROS_DISTRO}-image-publisher
+# ros-${ROS_DISTRO}-diagnostic-updater
+# ros-${ROS_DISTRO}-diagnostic-msgs
+# sudo apt install ros-$ROS_DISTRO-image-geometry ros-$ROS_DISTRO-camera-info-manager \
+#                  ros-$ROS_DISTRO-image-transport ros-$ROS_DISTRO-image-publisher \
+#                  ros-$ROS_DISTRO-diagnostic-updater ros-$ROS_DISTRO-diagnostic-msgs
+# sudo apt-get install libdw-dev
+
+
+# OrbbecViewer 相机上位机软件
+# wget https://github.com/orbbec/OrbbecSDK/releases/download/v1.10.27/OrbbecViewer_v1.10.27_202509260133_linux_x64_release.zip
+
+# AIUI 功能包依赖
+pygame==2.6.1
+ws4py==0.6.0
+scipy==1.10.1
+numpy==1.24.4
+pyserial==3.5
+
+# DH5 双手USB口权限
+# sudo usermod -a -G dialout $USER # need reboot to activate
