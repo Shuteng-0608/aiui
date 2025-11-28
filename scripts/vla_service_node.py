@@ -113,8 +113,8 @@ class VLAServiceServer:
             depth_array[np.isinf(depth_array)] = 0
             cv_depth = depth_array.astype(np.uint16)
             # 保存原始深度为PNG文件（保留完整深度信息）
-            cv2.imwrite("/home/whc/aiui_ws/src/aiui/depth_image_16bit.png", cv_depth)
-            cv2.imwrite("/home/whc/aiui_ws/src/aiui/color_image.jpg", self.bridge.imgmsg_to_cv2(image_msg, "bgr8"))
+            cv2.imwrite("/home/pangu/pangu/src/aiui/depth_image_16bit.png", cv_depth)
+            cv2.imwrite("/home/pangu/pangu/src/aiui/color_image.jpg", self.bridge.imgmsg_to_cv2(image_msg, "bgr8"))
             
             
 

@@ -44,6 +44,25 @@ class DH5ModbusAPI:
             self.serial_connection.close()
             return self.SUCCESS
 
+    def send_modbus_command_no_resp(self, function_code, register_address, data=None, data_length=None):
+        if not self.serial_connection or not self.serial_connection.is_open:
+            return self.ERROR_CONNECTION_FAILED
+
+        try:
+            if function_code == 0x03:  # Read Holding Registers
+                message = self._build_request(function_code, register_address, data_length=data_length or 1)
+            elif function_code == 0x06:  # Write Single Register
+                message = self._build_request(function_code, register_address, value=data)
+            elif function_code == 0x10:  # Write Multiple Registers
+                message = self._build_request(function_code, register_address, values=data, data_length=data_length)
+            else:
+                return self.ERROR_INVALID_COMMAND
+
+            self.serial_connection.write(message)
+            response = self.serial_connection.read(256)
+            return self._parse_response(response, function_code)
+        except Exception as e:
+            return f"Error: {str(e)}"
     def send_modbus_command(self, function_code, register_address, data=None, data_length=None):
         if not self.serial_connection or not self.serial_connection.is_open:
             return self.ERROR_CONNECTION_FAILED
@@ -296,6 +315,7 @@ class DH5ModbusAPI:
         :param acc_list: 加速度列表
         :return:
         """
+        set_start_time = time.time()
         if axis_list is None or [0]:
             axis_list = [1, 2, 3, 4, 5, 6]
         if force_list is None or [0]:
@@ -318,7 +338,8 @@ class DH5ModbusAPI:
             # Left hand
             position_list = self.clamp_list(self.err_comp(position_list), position_limits_left)
         complete_list = position_list + force_list + speed_list + acc_list
-        return self.send_modbus_command(function_code=0x10,
+        rospy.loginfo(f"[DH5ModbusAPI] set_all total time before send: {time.time() - set_start_time} seconds")
+        return self.send_modbus_command_no_resp(function_code=0x10,
                                         register_address=position_register_address,
                                         data=complete_list,
                                         data_length=len(complete_list))
@@ -432,7 +453,10 @@ class DH5ModbusAPI:
     def err_comp(self, right, gain_err=None):
         """误差补偿"""
         if gain_err is None:
-            gain_err = [36, -46, -21, -6, 1, -143]
+            # gain_err = [36, -46, -21, -6, 1, -143]
+            # gain_err = [4, 0, 24, -30, 40, -43]
+            gain_err = [-69, -87, -8, -49, -47, -113]
+            
         gain_left = [0, 0, 0, 0, 0, 0]
         for i in range(len(right)):
             gain_left[i] = gain_err[i] + right[i]
@@ -473,6 +497,7 @@ class DH5ModbusAPI:
 
 
 def handle_set_position(req):
+    handle_start_time = time.time()
     # 根据请求中的hand_type决定使用哪个机械手
     if req.hand_type == "both":
         rospy.loginfo("Setting positions for BOTH hand")
@@ -507,11 +532,14 @@ def handle_set_position(req):
         return DH5SetPositionResponse(-1)
     if req.hand_type == 'right' and req.hand_mode == 'hand': # RIGHT hand
         rospy.loginfo("Setting positions for RIGHT hand")
+        dh5_update_start_time = time.time()
         result = api_r.set_all(req.right_position_list, 
                                axis_list=req.right_axis_list,
                                force_list=req.right_force_list,
                                speed_list=req.right_speed_list,
                                acc_list=req.right_acc_list)
+        rospy.loginfo(f"DH5 API update time: {time.time() - dh5_update_start_time} seconds")
+        rospy.loginfo(f"Time taken to handle RIGHT hand request: {time.time() - handle_start_time} seconds")
         
     elif req.hand_type == 'left' and req.hand_mode == 'hand': # LEFT hand
         rospy.loginfo("Setting positions for LEFT hand")
@@ -575,14 +603,31 @@ if __name__ == '__main__':
     rospy.loginfo(api_l.open_connection())
     rospy.loginfo(api_l.initialize(0b10))
     rospy.loginfo(api_l.check_initialization())
-    position_limits_left = [
-        [0, 966],
-        [0, 1725],
-        [0, 1686],
-        [0, 1725],
-        [0, 1732],
-        [0, 838],
+    # position_limits_left = [
+    #     [0, 966],
+    #     [0, 1725],
+    #     [0, 1686],
+    #     [0, 1725],
+    #     [0, 1732],
+    #     [0, 838],
+    # ]
+    # position_limits_left = [
+    #     [30, 934],
+    #     [10, 1771],
+    #     [30, 1731],
+    #     [30, 1701],
+    #     [10, 1771],
+    #     [30, 938],
+    # ]
+    position_limits_left = [ 
+        [30, 851],
+        [10, 1683],
+        [30, 1699],
+        [30, 1681],
+        [10, 1683],
+        [30, 867],
     ]
+
 
     #### Right Hand Initialization #### ttyUSB0
     """
@@ -598,12 +643,12 @@ if __name__ == '__main__':
     rospy.loginfo(api_r.initialize(0b10))
     rospy.loginfo(api_r.check_initialization())
     position_limits_right = [
-        [30, 930],
-        [10, 1771],
+        [30, 920],
+        [10, 1770],
         [30, 1707],
-        [30, 1731],
-        [30, 1731],
-        [30, 981],
+        [30, 1730],
+        [30, 1730],
+        [30, 980],
     ]
 
     """
