@@ -168,9 +168,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/aiui_ros.py
   scripts/aiui_dev.py
-  scripts/tts_time_test.py
   scripts/aiui_tts_player.py
   scripts/aiui_tts_generator.py
   scripts/vlm_service_node.py
@@ -178,8 +176,6 @@ catkin_install_python(PROGRAMS
   scripts/dh5_control.py
   scripts/dh5_control_ros.py
   scripts/dh5_control_teleop.py
-  scripts/aiui_test.py
-  scripts/aiui_test01.py
   scripts/keyboard_action.py
   scripts/keyboard_demo.py
   scripts/roscore_monitor.py
