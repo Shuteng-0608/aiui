@@ -13,6 +13,7 @@ import pygame
 import pygame.mixer
 import os
 import random
+from datetime import datetime
 
 import rospy
 from aiui.srv import TTS, TTSRequest
@@ -397,19 +398,19 @@ class SocketDemo(Thread):
     
         try:
             rospy.sleep(0.8)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/look_at_me.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/look_at_me.mp3")
             # rospy.sleep(2)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/get_ready.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/get_ready.mp3")
             # rospy.sleep(2)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/pose.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/pose.mp3")
             # rospy.sleep(2)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/three.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/three.mp3")
             rospy.sleep(1.5)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/two.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/two.mp3")
             rospy.sleep(1.5)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/one.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/one.mp3")
             rospy.sleep(2.5)
-            self.play_existing_audio("/home/pangu-u/aiui_fusion/src/aiui/audio/qie_zi.mp3")
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/qie_zi.mp3")
             # rospy.sleep(2)
 
             
@@ -422,8 +423,13 @@ class SocketDemo(Thread):
             rospy.loginfo("成功获取图像!")
             
             # 保存图像
-            cv2.imwrite("captured_image.jpg", cv_image)
-            rospy.loginfo("图像已保存为 captured_image.jpg")
+            timestamp = rospy.get_time()  # 获取ROS时间
+            human_time = datetime.fromtimestamp(timestamp).strftime("%Y%m%d_%H%M%S_%f")
+            filename = f"captured_image_{human_time}.jpg"
+            cv2.imwrite(filename, cv_image)
+            rospy.loginfo(f"图像已保存为 {filename}")
+            # cv2.imwrite("captured_image.jpg", cv_image)
+            # rospy.loginfo("图像已保存为 captured_image.jpg")
             
             # 创建全屏窗口显示图像
             screen_width, screen_height = 1920, 1080  # 根据实际屏幕分辨率调整
@@ -785,7 +791,7 @@ class SocketDemo(Thread):
                         self.aiui_type = ""
                         data = json.loads(result)
                         self.get_aiui_type(data)
-                        # print(f"AIUI message processed successfully: {result.decode('utf-8')}")
+                        print(f"AIUI message processed successfully: {result.decode('utf-8')}")
 
                         if data.get('content', {}).get('eventType', {}) == 5:
                             self.wakeup_state = False
