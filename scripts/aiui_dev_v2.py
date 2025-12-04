@@ -16,12 +16,17 @@ import random
 from datetime import datetime
 
 import rospy
+import math
+import actionlib
 from aiui.srv import TTS, TTSRequest
 from aiui.srv import VLMProcess, VLMProcessRequest
 from aiui.srv import StringService, StringServiceRequest
 from aiui.srv import DH5SetPosition, DH5SetPositionRequest
 from aiui.srv import VLAProcess, VLAProcessRequest
 from aiui.srv import CheckRunStatus, CheckRunStatusRequest
+from woosh_msgs.msg import StepControlAction, StepControlGoal, StepControl
+from woosh_msgs.srv import ExecTask, ExecTaskRequest
+from woosh_msgs.msg import RobotStatus
 from std_msgs.msg import String
 import cv2
 from cv_bridge import CvBridge
@@ -78,6 +83,31 @@ class SocketDemo(Thread):
         self.active_audio_channel = None
         self.current_audio_stream = None
         self.active_audio_file = None
+
+        self.woosh_client = actionlib.SimpleActionClient('/cmd_vel_control', StepControlAction)
+        self.timeout = 5
+        rospy.loginfo("等待 step_control Action 服务器...")
+        # 添加超时和错误处理
+        if not self.woosh_client.wait_for_server(rospy.Duration(self.timeout)):
+            rospy.logerr(f"无法连接到Action服务器，超时: {self.timeout}秒")
+            raise Exception("Action服务器连接失败")
+        rospy.loginfo("连接到 step_control Action 服务器")
+
+        rospy.wait_for_service('/exec_task')
+        try:
+            self.exec_task_client = rospy.ServiceProxy('/exec_task', ExecTask)
+            rospy.loginfo("连接到 /exec_task 服务成功")
+        except rospy.ServiceException as e:
+            rospy.logerr("服务调用失败: %s", e)
+
+
+        # 初始化状态监听
+        self.robot_status = None
+        self.status_subscriber = rospy.Subscriber('/robot_status', RobotStatus, self.robot_status_callback)
+
+
+
+
         # 启动TTS和音频处理线程
         
         Thread(target=self.process_tts_queue, daemon=True).start()
@@ -88,6 +118,49 @@ class SocketDemo(Thread):
         # 启动句子处理线程
         self.sentence_processing_thread = Thread(target=self.process_sentences, daemon=True)
         self.sentence_processing_thread.start()
+
+    def robot_status_callback(self, msg):
+        """机器人状态回调函数"""
+        self.robot_status = msg
+    
+    def wait_for_task_completion(self, timeout=60):
+        """
+        等待任务完成
+        
+        参数:
+        - timeout: 超时时间（秒），默认60秒
+        
+        返回:
+        - True: 任务完成
+        - False: 任务失败或超时
+        """
+        start_time = time.time()
+        last_state = 7
+        
+        while not rospy.is_shutdown():
+            # 检查超时
+            if time.time() - start_time > timeout:
+                rospy.logerr(f"任务等待超时（{timeout}秒）")
+                return False
+            
+            if self.robot_status is None:
+                rospy.logwarn("未收到机器人状态消息，等待中...")
+                rospy.sleep(1)
+                continue
+                
+            current_state = self.robot_status.task_state
+            # rospy.loginfo(f"当前任务状态: {current_state}")
+            
+            # 检查任务状态
+            if current_state == 0 and last_state == 3:
+                rospy.loginfo("任务执行完成")
+                return True
+            
+            # 等待一段时间后再次检查
+            last_state = current_state
+            rospy.sleep(0.5)
+        
+        return False
 
 
     def flush_all(self):
@@ -147,36 +220,6 @@ class SocketDemo(Thread):
                 except Exception as e:
                     rospy.logwarn(f"删除当前播放文件失败: {e}")
 
-    # def flush_all(self):
-    #     """清空所有队列和缓冲区，删除相关音频文件"""
-    #     with self.sentence_buffer.lock:
-    #         # 清空文本缓冲区
-    #         if self.sentence_buffer.buffer:
-    #             self.tts_queue.put(self.sentence_buffer.buffer)
-    #             self.sentence_buffer.buffer = ""
-            
-    #         # 清空TTS队列
-    #         while not self.tts_queue.empty():
-    #             try:
-    #                 text = self.tts_queue.get_nowait()
-    #                 if text:
-    #                     rospy.loginfo(f"清空TTS队列中的文本: {text}")
-    #             except queue.Empty:
-    #                 break
-            
-    #         while not self.audio_queue.empty():
-    #             try:
-    #                 # 获取队列中的音频文件路径
-    #                 audio_path = self.audio_queue.get_nowait()
-    #                 try:
-    #                     os.remove(audio_path)
-    #                     rospy.loginfo(f"已删除临时文件: {audio_path}")
-    #                 except Exception as e:
-    #                     rospy.logwarn(f"删除临时文件失败: {e}")
-                    
-    #             except queue.Empty:
-    #                 break
-
     # 处理TTS队列的线程函数
     def process_tts_queue(self):
         while not self.stop_event.is_set():
@@ -186,13 +229,7 @@ class SocketDemo(Thread):
                 # 调用TTS服务
                 req = TTSRequest()
                 req.request = text
-                # self.tts_client.wait_for_service()
                 resp = self.tts_client.call(req)
-                # if resp.tts_url == "tts_url":
-                #     rospy.logwarn("TTS服务未返回有效的音频URL")
-                #     resp = self.tts_client.call(req)
-                #     rospy.logwarn(resp)
-                #     rospy.logwarn("重试中...")
 
                 # 获取保存的音频文件名
                 file_url = resp.tts_url
@@ -487,13 +524,30 @@ class SocketDemo(Thread):
             if resp.ros_run_flag is False:
                 Thread(target=self.arm_client.call, args=(req,), daemon=True).start()
 
+        elif intent == "guolai":
+            rospy.loginfo(f"检测到 [{intent}] 意图, 执行过来动作")
+            self.woosh_mf(0.1, 0.1, True)
+        
         elif intent == "LabTour":
-            rospy.loginfo(f"检测到 [{intent}] 意图, 执行实验室游览动作")
-            # mb_server = SRModbusSdk()
-            # mb_server.connect_tcp('192.168.10.141')
-            # mb_server.move_to_station_no(2, 1)
-            # mb_server.wait_movement_task_finish(1) 
-            # self.labTour()
+            rospy.loginfo(f"检测到 [{intent}] 意图, 执行实验室参观动作")
+            self.sentence_buffer.append_text("好的，跟我来吧！")
+            self.send_task("3")
+            rospy.sleep(2)
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task3.mp3")
+            self.send_task("4")
+            rospy.sleep(2)
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task4.mp3")
+            self.send_task("5")
+            rospy.sleep(2)
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task5.mp3")
+            self.send_task("2")
+            rospy.sleep(2)
+            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task2.mp3")
+            self.send_task("1")
+            self.sentence_buffer.append_text("回到初始点位！")
+
+            
+
         elif intent == "Bow":
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行鞠躬欢送动作")
             self.sentence_buffer.append_text("哇时间过得好快, 再见喽，期待下次再和您见面，记得要常来看我哦！")
@@ -678,11 +732,165 @@ class SocketDemo(Thread):
             self.end_time = time.time()
             self.tts_queue.put(sentence)
 
+    def active_callback(self):
+        """Goal开始执行时的回调"""
+        rospy.loginfo("🚀 移动动作开始执行...")
+    
+    def feedback_callback(self, feedback):
+        """进度反馈回调"""
+        rospy.loginfo(f"Feedback: {feedback}")
+        # rospy.loginfo(f"📊 移动进度: {feedback.feedback}, 百分比: {feedback.percent}%, 模式: {feedback.executeMode}")
+    
+    def done_callback(self, status, result):
+        """Goal完成时的回调"""
+        # 状态码说明
+        status_names = {
+            actionlib.GoalStatus.PENDING: "等待中",
+            actionlib.GoalStatus.ACTIVE: "执行中", 
+            actionlib.GoalStatus.PREEMPTED: "被抢占",
+            actionlib.GoalStatus.SUCCEEDED: "成功",
+            actionlib.GoalStatus.ABORTED: "失败",
+            actionlib.GoalStatus.REJECTED: "被拒绝",
+            actionlib.GoalStatus.PREEMPTING: "抢占中",
+            actionlib.GoalStatus.RECALLING: "召回中",
+            actionlib.GoalStatus.RECALLED: "已召回",
+            actionlib.GoalStatus.LOST: "丢失"
+        }
+        
+        status_name = status_names.get(status, "未知状态")
+        rospy.loginfo(f"🎯 移动动作完成! 状态: {status_name}({status}), 结果码: {result.result}")
+        
+        # 根据结果进行不同处理
+        if status == actionlib.GoalStatus.SUCCEEDED:
+            rospy.loginfo("✅ 移动任务成功完成！")
+        elif status == actionlib.GoalStatus.PREEMPTED:
+            rospy.logwarn("⚠️ 移动任务被取消！")
+        elif status == actionlib.GoalStatus.ABORTED:
+            rospy.logerr("❌ 移动任务失败！")
+    
+    def woosh_rotate(self, angle):
+        """发送移动命令"""
+        try:
+            goal = StepControlGoal()
+            goal.mode = StepControlGoal.EXCUTE
+            goal.useAvoid = False
+            
+            step = StepControl()
+            step.executeMode = StepControlGoal.ROTATE
+            step.data = -(angle - 90) / 180.0 * math.pi  # 角度转弧度
+            step.speed = 2
+            # step.angle = (angle - 90) / 180.0 * math.pi  # 角度转弧度
+            
+            goal.stepControl = [step]
+            
+            # rospy.loginfo(f"发送移动指令: 距离={distance}m, 速度={speed}m/s, 避障={use_avoid}")
+            
+            # 发送目标并设置回调函数
+            self.woosh_client.send_goal(goal, 
+                                 done_cb=self.done_callback, 
+                                 active_cb=self.active_callback, 
+                                 feedback_cb=self.feedback_callback)
+            rospy.loginfo("✅ 移动指令已发送，等待执行...")
+            
+            # 可选：等待结果（同步方式）
+            success = self.woosh_client.wait_for_result(rospy.Duration(self.timeout))
+            
+            if success:
+                rospy.loginfo("🎉 移动任务顺利完成！")
+                return True
+            else:
+                rospy.logwarn("⏰ 移动任务超时！")
+                self.woosh_client.cancel_goal()
+                return False
+                
+        except Exception as e:
+            rospy.logerr(f"发送指令时发生错误: {e}")
+            return False
+    
+    def send_task(self, mark_no):
+        """
+        发送任务，只包含task_id和mark_no
+        
+        参数:
+        - task_id: 任务ID
+        - mark_no: 标记编号
+        """
+        try:
+            # 创建服务请求
+            req = ExecTaskRequest()
+            
+            req.task_exect = 1      # 执行任务
+            req.task_id = 0         # 任务id
+            req.task_type = 1       # 拣选
+            req.direction = 0       # 动作方向
+            req.task_type_no = 0    # 组合类型默认0
+            req.mark_no = mark_no   # 储位编号
+            
+            rospy.loginfo(f"发送任务: mark_no={mark_no}")
+            response = self.exec_task_client.call(req)
             
             
-            # 记录日志
-            # rospy.loginfo(f"合成句子: {sentence}")       
+            # 处理响应
+            if response.success:
+                rospy.loginfo(f"任务执行成功: {response.message}")
+                # 等待任务完成
+                rospy.loginfo("开始监听任务执行状态...")
+                task_completed = self.wait_for_task_completion()
+                
+                if task_completed:
+                    rospy.loginfo("任务执行成功完成")
+                else:
+                    rospy.logwarn("任务执行未正常完成")
+                    
+                return task_completed
+            else:
+                rospy.logwarn(f"任务执行失败: {response.message}")
+                rospy.logwarn(f"状态码: {response.statusCode}")
             
+            return response
+            
+        except rospy.ServiceException as e:
+            rospy.logerr(f"服务调用异常: {e}")
+            return None
+    
+    def woosh_mf(self, distance, speed, use_avoid):
+        """发送移动命令"""
+        try:
+            goal = StepControlGoal()
+            goal.mode = StepControlGoal.EXCUTE
+            goal.useAvoid = use_avoid
+            
+            step = StepControl()
+            step.executeMode = StepControlGoal.STRAIGHT
+            step.data = distance
+            step.speed = speed
+            # step.angle = (angle - 90) / 180.0 * math.pi  # 角度转弧度
+            
+            goal.stepControl = [step]
+            
+            # rospy.loginfo(f"发送移动指令: 距离={distance}m, 速度={speed}m/s, 避障={use_avoid}")
+            
+            # 发送目标并设置回调函数
+            self.woosh_client.send_goal(goal, 
+                                 done_cb=self.done_callback, 
+                                 active_cb=self.active_callback, 
+                                 feedback_cb=self.feedback_callback)
+            rospy.loginfo("✅ 移动指令已发送，等待执行...")
+            
+            # 可选：等待结果（同步方式）
+            success = self.woosh_client.wait_for_result(rospy.Duration(self.timeout))
+            
+            if success:
+                rospy.loginfo("🎉 移动任务顺利完成！")
+                return True
+            else:
+                rospy.logwarn("⏰ 移动任务超时！")
+                self.woosh_client.cancel_goal()
+                return False
+                
+        except Exception as e:
+            rospy.logerr(f"发送指令时发生错误: {e}")
+            return False
         
             
 
@@ -732,7 +940,7 @@ class SocketDemo(Thread):
                     self.vlm_text = ""
                     rospy.logwarn(f"语义 VLM 解析小异常: {str(e)}")
 
-            if self.detected_intent in ["SayHi", "handshake", "LabTour", "Bow", "Nod", "vla", "vlm", "self_photo", "pangu", "take_photo", "LOVE"]:
+            if self.detected_intent in ["guolai", "SayHi", "handshake", "LabTour", "Bow", "Nod", "vla", "vlm", "self_photo", "pangu", "take_photo", "LOVE"]:
                 self.flush_all()  # 清空之前的缓冲区
                 self.handle_detected_intent(self.detected_intent)
         else:
@@ -791,6 +999,7 @@ class SocketDemo(Thread):
                         self.aiui_type = ""
                         data = json.loads(result)
                         self.get_aiui_type(data)
+                        
                         print(f"AIUI message processed successfully: {result.decode('utf-8')}")
 
                         if data.get('content', {}).get('eventType', {}) == 5:
@@ -798,6 +1007,16 @@ class SocketDemo(Thread):
                             # rospy.loginfo(f"唤醒结束：==== 我不在 ==== ")
                             self.flush_all()  # 清空之前的缓冲区
                             self.sentence_buffer.append_text("我先退下啦！")
+                        
+                        if data.get('content', {}).get('eventType', {}) == 1:
+                            if data.get('content', {}).get('result', {}).get('ivw', {}).get('keyword', {}) == "xiao3 gu3 xiao3 gu3":
+                                try:
+                                    angle = data.get('content', {}).get('result', {}).get('ivw', {}).get('angle', {})
+                                    if angle is not None:
+                                        rospy.loginfo(f"声源定位: {angle}")
+                                        self.woosh_rotate(float(angle))
+                                except (IndexError, AttributeError, TypeError, KeyError) as e:
+                                    rospy.logwarn(f"声源定位解析小异常: {str(e)}")
                             
 
                         if data.get('content', {}).get('eventType', {}) == 4:
