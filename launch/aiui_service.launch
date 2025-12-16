@@ -4,7 +4,7 @@
     <node 
         pkg="aiui" 
         type="aiui_tts_generator.py" 
-        name="tts_player_service_node" 
+        name="tts_generator_service_node" 
         output="screen"
     />
 
@@ -13,7 +13,7 @@
     <node 
         pkg="aiui" 
         type="aiui_tts_player.py" 
-        name="tts_generator_service_node" 
+        name="tts_player_service_node" 
         output="screen"
     />
 

@@ -170,6 +170,7 @@ docs/_build/
 # User-uploaded files
 uploads/
 downloads/
+tts_audio/
 
 # Generated files
 generated/

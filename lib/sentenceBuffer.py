@@ -49,20 +49,11 @@ class SentenceBuffer:
                         self.buffer = self.buffer[self.max_sentence_length:]
             
             # 暂停以避免高CPU使用率
-            time.sleep(0.1)
+            # time.sleep(0.1)
     
     def find_best_breakpoint(self, text):
         """在文本中找到最佳断句点"""
-        # 1. 首先寻找结束标点
-        end_punctuation_pattern = r'[。！？.!?;:；：…]'
-        match = re.search(end_punctuation_pattern, text[self.min_sentence_length:])
-        
-        if match:
-            # 找到了标点，在标点后断句
-            end_pos = self.min_sentence_length + match.end()
-            return text[:end_pos], text[end_pos:]
-        
-        # 2. 其次寻找逗号、分句号等
+        # 1. 首先寻找逗号、分句号等
         mid_punctuation_pattern = r'[,，、|]'
         match = re.search(mid_punctuation_pattern, text[self.min_sentence_length:])
         
@@ -70,7 +61,15 @@ class SentenceBuffer:
             # 在逗号后断句
             end_pos = self.min_sentence_length + match.end()
             return text[:end_pos], text[end_pos:]
+        # 2. 其次寻找结束标点
+        end_punctuation_pattern = r'[。！？.!?;:；：…]'
+        match = re.search(end_punctuation_pattern, text[self.min_sentence_length:])
         
+        if match:
+            # 找到了标点，在标点后断句
+            end_pos = self.min_sentence_length + match.end()
+            return text[:end_pos], text[end_pos:]
+    
         # 3. 寻找自然停顿点（如空格、连词等）
         natural_break_pattern = r'[\s]|(而且)|(然后)|(所以)|(因为)|(例如)'
         match = re.search(natural_break_pattern, text[self.min_sentence_length:])

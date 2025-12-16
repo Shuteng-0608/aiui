@@ -55,8 +55,8 @@ def main():
     
 
     if len(sys.argv) != 2:
-        print("用法: python3 script.py <mark_no>")
-        print("示例: python3 script.py A001")
+        print("用法: rosrun aiui woosh_exec_task.py <mark_no>")
+        print("示例: rosrun aiui woosh_exec_task.py 1")
         sys.exit(1)
     mark_no = sys.argv[1]
     

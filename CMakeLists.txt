@@ -61,6 +61,7 @@ add_service_files(
   StringService.srv
   FeedbackService.srv
   TTS.srv
+  TTSV2.srv
   VLMProcess.srv
   VLAProcess.srv
   DH5SetPosition.srv
@@ -171,18 +172,26 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/aiui_dev.py
   scripts/aiui_dev_v2.py
+  scripts/aiui_dev_v3.py
+
+
   scripts/aiui_tts_player.py
   scripts/aiui_tts_generator.py
+  scripts/aiui_tts_service.py
+  scripts/aiui_tts_v2_service.py
+
   scripts/vlm_service_node.py
   scripts/vla_service_node.py
+
   scripts/dh5_control.py
   scripts/dh5_control_ros.py
   scripts/dh5_control_teleop.py
-  scripts/keyboard_action.py
-  scripts/keyboard_demo.py
-  scripts/roscore_monitor.py
+
   scripts/woosh_ctrl.py
   scripts/woosh_exec_task.py
+
+  scripts/keyboard_action.py
+  
   # hand_eye_calibration/hand_eye_calibration.py
   hand_eye_calibration/collect_data_ros.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
