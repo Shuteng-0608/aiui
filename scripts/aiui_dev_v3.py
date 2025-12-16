@@ -19,6 +19,7 @@ import rospy
 import math
 import actionlib
 from aiui.srv import TTS, TTSRequest
+from aiui.srv import TTSV2, TTSV2Request
 from aiui.srv import VLMProcess, VLMProcessRequest
 from aiui.srv import StringService, StringServiceRequest
 from aiui.srv import DH5SetPosition, DH5SetPositionRequest
@@ -50,7 +51,7 @@ class SocketDemo(Thread):
     def __init__(self):
         super().__init__()
         self.client_socket = None
-        self.server_ip_port = ('192.168.8.141', 19199)
+        self.server_ip_port = ('192.168.8.142', 19199)
         self.server_ip = self.server_ip_port[0]
         self.connected_event = Event()
         self.stop_event = Event()
@@ -73,7 +74,8 @@ class SocketDemo(Thread):
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)
-        self.tts_client = rospy.ServiceProxy("/tts_service/generator",TTS)
+        # self.tts_client = rospy.ServiceProxy("/tts_service/generator",TTS)
+        self.tts_client = rospy.ServiceProxy("/tts_service/tts_v2",TTSV2)
         self.dh5_client = rospy.ServiceProxy("/dh5/set_all_position",DH5SetPosition)
         self.vla_client = rospy.ServiceProxy("vla_service", VLAProcess)
         self.check_client = rospy.ServiceProxy("/aris_node/check_srv", CheckRunStatus)
@@ -236,34 +238,33 @@ class SocketDemo(Thread):
                 # 从队列获取待处理文本
                 text = self.tts_queue.get(timeout=1)
                 # 调用TTS服务
-                req = TTSRequest()
-                req.request = text
+                req = TTSV2Request()
+                req.tts_text = text
                 resp = self.tts_client.call(req)
 
                 # 获取保存的音频文件名
-                file_url = resp.tts_url
-                try:
-                    # 下载MP3文件
-                    response = requests.get(file_url)
-                    response.raise_for_status()  # 检查请求是否成功
+                file_name = "/home/pangu/pangu/src/aiui/tts_audio/" + resp.file_name
+                # try:
+                #     # 下载MP3文件
+                #     response = requests.get(file_url)
+                #     response.raise_for_status()  # 检查请求是否成功
                     
-                    # 保存临时文件
-                    timestamp = int(time.time() * 1000)  # 毫秒级时间戳
-                    temp_file = f"tts_{timestamp}.mp3"
-                    # temp_file = "temp_tts.mp3"
-                    with open(temp_file, 'wb') as f:
-                        f.write(response.content)
+                #     # 保存临时文件
+                #     timestamp = int(time.time() * 1000)  # 毫秒级时间戳
+                #     temp_file = f"tts_{timestamp}.mp3"
+                #     # temp_file = "temp_tts.mp3"
+                #     with open(temp_file, 'wb') as f:
+                #         f.write(response.content)
                     
-                    # rospy.loginfo(f"已下载TTS音频到: {temp_file}")
-                except Exception as e:
-                    rospy.logerr(f"下载或播放音频时出错: {e}")
+                #     # rospy.loginfo(f"已下载TTS音频到: {temp_file}")
+                # except Exception as e:
+                #     rospy.logerr(f"下载或播放音频时出错: {e}")
 
                 
-                filename = temp_file
                 
                 # 将音频文件加入播放队列
-                if filename:
-                    self.audio_queue.put(filename)
+                if file_name:
+                    self.audio_queue.put(file_name)
 
             except queue.Empty:
                 continue
@@ -301,11 +302,11 @@ class SocketDemo(Thread):
                     # 加载并播放新音频
                     pygame.mixer.music.load(file_path)
                     pygame.mixer.music.play()
-                    # rospy.loginfo(f"Playing audio: {file_path}")
+                    rospy.loginfo(f"Playing audio: {file_path}")
                     # 播放完成后删除临时文件
                     try:
                         os.remove(file_path)
-                        # rospy.loginfo(f"已删除临时文件: {file_path}")
+                        rospy.loginfo(f"已删除临时文件: {file_path}")
                     except Exception as e:
                         rospy.logwarn(f"删除临时文件失败: {e}")
                     
@@ -393,6 +394,8 @@ class SocketDemo(Thread):
             content = data['content']
             if 'info' in content:
                 info = content['info']
+                if not isinstance(info, dict):
+                    return
                 if 'data' in info and isinstance(info['data'], list) and len(info['data']) > 0:
                     data_item = info['data'][0]
                     if 'params' in data_item:

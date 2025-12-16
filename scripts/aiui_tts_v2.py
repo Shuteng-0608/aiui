@@ -17,12 +17,12 @@ import io
 
 # 配置信息
 url = "wss://aiui.xf-yun.com/v2/aiint/ws"
-appid = "e1ac1785"
-api_key = "ee8edf3ac8a559787df7a819182e81aa"
-api_secret = "NWZiZTg5Y2U5ZDZiNGU0M2YyZTVhMDI5"
+appid = "c79a8aff"
+api_key = "f477e270878c410e7f01f61ddeac83ac"
+api_secret = "NzRkMDY1MjEzOGU2ZTI4MmQxOTA5ZGY4"
 # scene = "IFLYTEK.tts"
-# scene = "IFLYTEK.hts" # 超拟人合成
-scene = "main_box"
+scene = "IFLYTEK.hts" # 超拟人合成
+# scene = "main_box"
 data_type = 'text'
 question = "你好，这是一个测试语音合成的句子"
 
@@ -171,16 +171,16 @@ class AIUIV2WsClient(object):
             ws.close()
             return
 
-        if 'status' in header and header['status'] == 0:
-            # self.count += 1
-            print(f"开始接收TTS, {header['status']}")
-        elif 'status' in header and header['status'] == 1:
-            # self.count += 1
-            print(f"接收TTS中, {header['status']}")
-        elif 'status' in header and header['status'] == 2:
-            # self.count += 1
-            print(f"完成TTS接收, {self.count} - {header['status']}")
-            # self.count = 0
+        # if 'status' in header and header['status'] == 0:
+        #     # self.count += 1
+        #     print(f"开始接收TTS, {header['status']}")
+        # elif 'status' in header and header['status'] == 1:
+        #     # self.count += 1
+        #     print(f"接收TTS中, {header['status']}")
+        # elif 'status' in header and header['status'] == 2:
+        #     # self.count += 1
+        #     print(f"完成TTS接收, {self.count} - {header['status']}")
+        #     # self.count = 0
 
 
         # 处理TTS音频数据

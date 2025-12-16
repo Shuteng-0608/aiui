@@ -3,8 +3,8 @@
 
     <node 
         pkg="aiui" 
-        type="tts_test.py" 
-        name="tts_player_service_node" 
+        type="aiui_tts_generator.py" 
+        name="tts_generator_service_node" 
         output="screen"
     />
 
@@ -12,8 +12,17 @@
 
     <node 
         pkg="aiui" 
-        type="aiui_tts_service_node.py" 
-        name="tts_generator_service_node" 
+        type="aiui_tts_player.py" 
+        name="tts_player_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 TTS V2 节点 -->
+
+    <node 
+        pkg="aiui" 
+        type="aiui_tts_v2_service.py" 
+        name="tts_service_node" 
         output="screen"
     />
 
