@@ -33,13 +33,21 @@ class DH5ModbusAPI:
             [30, 867],
         ]
         # Right Pos Limit
+        # self.position_limits_right = [
+        #     [30, 920],
+        #     [10, 1771],
+        #     [30, 1707],
+        #     [30, 1731],
+        #     [30, 1731],
+        #     [30, 981],
+        # ]
         self.position_limits_right = [
-            [30, 920],
-            [10, 1771],
-            [30, 1707],
-            [30, 1731],
-            [30, 1731],
-            [30, 981],
+            [10, 873],
+            [10, 1686],
+            [10, 1686],
+            [10, 1690],
+            [10, 1692],
+            [10, 873],
         ]
         
         # Error_compensation: ERR_GAIN = LEFT - RIGHT
@@ -594,9 +602,9 @@ if __name__ == '__main__':
     sudo chmod 666 /dev/ttyUSB1
     """
     # 初始化ROS节点
-    rospy.init_node('dh5_hand_controller')
+    rospy.init_node('dh5_hand_teleop_controller')
     
-    rospy.loginfo("Starting DH5 Hand Controller Node")
+    rospy.loginfo("Starting DH5 Hand Teleop Controller Node")
 
     # RIGHT   [930, 1771, 1707, 1731, 1731, 981]
     gesture_list = {
