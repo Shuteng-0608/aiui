@@ -30,13 +30,21 @@ class DH5ModbusAPI:
             [30, 867],
         ]
         # Right Pos Limit
+        # self.position_limits_right = [
+        #     [30, 920],
+        #     [10, 1771],
+        #     [30, 1707],
+        #     [30, 1731],
+        #     [30, 1731],
+        #     [30, 981],
+        # ]
         self.position_limits_right = [
-            [30, 920],
-            [10, 1771],
-            [30, 1707],
-            [30, 1731],
-            [30, 1731],
-            [30, 981],
+            [10, 873],
+            [10, 1686],
+            [10, 1686],
+            [10, 1690],
+            [10, 1692],
+            [10, 873],
         ]
         
         # Error_compensation: ERR_GAIN = LEFT - RIGHT

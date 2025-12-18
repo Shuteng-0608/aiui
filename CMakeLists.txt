@@ -186,6 +186,7 @@ catkin_install_python(PROGRAMS
   scripts/dh5_control.py
   scripts/dh5_control_ros.py
   scripts/dh5_control_teleop.py
+  scripts/dh5_teleop_sub.py
 
   scripts/woosh_ctrl.py
   scripts/woosh_exec_task.py

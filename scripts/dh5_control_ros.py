@@ -23,6 +23,39 @@ class DH5ModbusAPI:
         self.stop_bits = stop_bits
         self.parity = parity
         self.serial_connection = None
+         # Left Pos Limit
+        self.position_limits_left = [ 
+            [30, 851],
+            [10, 1683],
+            [30, 1699],
+            [30, 1681],
+            [10, 1683],
+            [30, 867],
+        ]
+        # Right Pos Limit
+        # self.position_limits_right = [
+        #     [30, 920],
+        #     [10, 1771],
+        #     [30, 1707],
+        #     [30, 1731],
+        #     [30, 1731],
+        #     [30, 981],
+        # ]
+        self.position_limits_right = [
+            [10, 873],
+            [10, 1686],
+            [10, 1686],
+            [10, 1690],
+            [10, 1692],
+            [10, 873],
+        ]
+        
+        # Error_compensation: ERR_GAIN = LEFT - RIGHT
+        self.gain_err = []
+        for i in range(6):
+            err = self.position_limits_left[i][1] - self.position_limits_right[i][1]
+            self.gain_err.append(err)
+        print(f"ERR_GAIN : {self.gain_err}")
 
     def open_connection(self):
         try:
@@ -234,12 +267,11 @@ class DH5ModbusAPI:
         register_address = 0x0101
         if self.port == '/dev/ttyUSB0':
             # Right hand
-            position_list = self.clamp_list(position_list, position_limits_right)
+            position_list = self.clamp_list(position_list, self.position_limits_right)
         if self.port == '/dev/ttyUSB1':
             # Left hand
-            position_list = self.err_comp(position_list)
-            position_list = self.clamp_list(position_list, position_limits_left)
-
+            position_list = self.err_comp(position_list, self.gain_err)
+            position_list = self.clamp_list(position_list, self.position_limits_left)
         return self.send_modbus_command(function_code=0x10,
                                         register_address=register_address,
                                         data=position_list,
@@ -333,10 +365,10 @@ class DH5ModbusAPI:
         acc_register_address = 0x0113
         if self.port == '/dev/ttyUSB0':
             # Right hand
-            position_list = self.clamp_list(position_list, position_limits_right)
+            position_list = self.clamp_list(position_list, self.position_limits_right)
         if self.port == '/dev/ttyUSB1':
             # Left hand
-            position_list = self.clamp_list(self.err_comp(position_list), position_limits_left)
+            position_list = self.clamp_list(self.err_comp(position_list, self.gain_err), self.position_limits_left)
         complete_list = position_list + force_list + speed_list + acc_list
         rospy.loginfo(f"[DH5ModbusAPI] set_all total time before send: {time.time() - set_start_time} seconds")
         return self.send_modbus_command_no_resp(function_code=0x10,
@@ -453,10 +485,8 @@ class DH5ModbusAPI:
     def err_comp(self, right, gain_err=None):
         """误差补偿"""
         if gain_err is None:
-            # gain_err = [36, -46, -21, -6, 1, -143]
-            # gain_err = [4, 0, 24, -30, 40, -43]
-            gain_err = [-69, -87, -8, -49, -47, -113]
-            
+            rospy.logwarn("Error Compensation NOT set")
+            gain_err = [0, 0, 0, 0, 0, 0]
         gain_left = [0, 0, 0, 0, 0, 0]
         for i in range(len(right)):
             gain_left[i] = gain_err[i] + right[i]
@@ -591,89 +621,23 @@ if __name__ == '__main__':
     }
 
     #### Left Hand Initialization #### ttyUSB1
-    """
-    axis_F1     30 - 934      大拇指左右转向
-    axis_F2     10 - 1771     食指
-    axis_F3     30 - 1731     中指
-    axis_F4     30 - 1701     无名指 
-    axis_F5     10 - 1771     小拇指
-    axis_F6     30 - 938      大拇指上下转向
-    """
+   
     api_l = DH5ModbusAPI(port='/dev/ttyUSB1', baud_rate=115200)
-    rospy.loginfo(api_l.open_connection())
-    rospy.loginfo(api_l.initialize(0b10))
+    rospy.loginfo(f"[LEFT HAND Connection]: {'SUCCESS' if api_l.open_connection() == 0 else 'FAILED'}")
+    rospy.loginfo(f"[LEFT HAND Initialization]: {api_l.initialize(0b10)}")
     rospy.loginfo(api_l.check_initialization())
-    # position_limits_left = [
-    #     [0, 966],
-    #     [0, 1725],
-    #     [0, 1686],
-    #     [0, 1725],
-    #     [0, 1732],
-    #     [0, 838],
-    # ]
-    # position_limits_left = [
-    #     [30, 934],
-    #     [10, 1771],
-    #     [30, 1731],
-    #     [30, 1701],
-    #     [10, 1771],
-    #     [30, 938],
-    # ]
-    position_limits_left = [ 
-        [30, 851],
-        [10, 1683],
-        [30, 1699],
-        [30, 1681],
-        [10, 1683],
-        [30, 867],
-    ]
-
+   
 
     #### Right Hand Initialization #### ttyUSB0
-    """
-    axis_F1     30 - 930     大拇指左右转向
-    axis_F2     10 - 1771    食指
-    axis_F3     30 - 1707    中指
-    axis_F4     30 - 1731    无名指 
-    axis_F5     30 - 1731    小拇指
-    axis_F6     30 - 981     大拇指上下转向
-    """
+    
     api_r = DH5ModbusAPI(port='/dev/ttyUSB0', baud_rate=115200)
-    rospy.loginfo(api_r.open_connection())
-    rospy.loginfo(api_r.initialize(0b10))
+    rospy.loginfo(f"[RIGHT HAND Connection]: {'SUCCESS' if api_r.open_connection() == 0 else 'FAILED'}")
+    rospy.loginfo(f"[RIGHT HAND Initialization]: {api_r.initialize(0b10)}")
     rospy.loginfo(api_r.check_initialization())
-    position_limits_right = [
-        [30, 920],
-        [10, 1770],
-        [30, 1707],
-        [30, 1730],
-        [30, 1730],
-        [30, 980],
-    ]
 
-    """
-    error_compensation:
-        RIGHT   [930, 1771, 1707, 1731, 1731, 981]
-        LEFT    [934, 1771, 1731, 1701, 1771, 938]
-        ERR_GAIN = LEFT - RIGHT  [+4, 0, +24, -30, +40, -43]
-    """
-    # err_gain = [4, 0, 24, -30, 40, -43]
     rospy.on_shutdown(shutdown_hook)
 
 
-    # r_state = api_r.get_all_feedback()
-    # r_parsed_data = api_r.parse_axis_state(r_state)
-    # rospy.loginfo("RIGHT 运行状态:", r_parsed_data['state'])
-    # rospy.loginfo("RIGHT 当前位置:", r_parsed_data['position'])
-    # rospy.loginfo("RIGHT 运行速度:", r_parsed_data['speed'])
-    # rospy.loginfo("RIGHT 当前电流:", r_parsed_data['current'])
-
-    # l_state = api_l.get_all_feedback()
-    # l_parsed_data = api_l.parse_axis_state(l_state)
-    # rospy.loginfo("LEFT 运行状态:", l_parsed_data['state'])
-    # rospy.loginfo("LEFT 当前位置:", l_parsed_data['position'])
-    # rospy.loginfo("LEFT 运行速度:", l_parsed_data['speed'])
-    # rospy.loginfo("LEFT 当前电流:", l_parsed_data['current'])
     
     
     # 创建ROS服务
