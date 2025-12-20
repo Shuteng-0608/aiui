@@ -1,0 +1,5 @@
+# PlayArmMovement.srv
+float32 rate
+---
+bool success
+string message

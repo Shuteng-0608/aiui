@@ -6,8 +6,10 @@ from socket import *
 import signal
 import requests
 from threading import Thread, Event, Lock
+import threading
 import subprocess
 import queue
+from aiui.srv._PlayArmMovement import PlayArmMovementRequest
 import numpy as np
 import pygame
 import pygame.mixer
@@ -15,6 +17,7 @@ import os
 import random
 from datetime import datetime
 
+import rosbag
 import rospy
 import math
 import actionlib
@@ -25,6 +28,9 @@ from aiui.srv import StringService, StringServiceRequest
 from aiui.srv import DH5SetPosition, DH5SetPositionRequest
 from aiui.srv import VLAProcess, VLAProcessRequest
 from aiui.srv import CheckRunStatus, CheckRunStatusRequest
+from aiui.srv import PlayArmMovement, PlayArmMovementResponse
+from arm_teleop.srv import StartDualTeleOP, StartDualTeleOPRequest
+from arm_teleop.msg import DualArmMovej, DualHandTele
 from woosh_msgs.msg import StepControlAction, StepControlGoal, StepControl
 from woosh_msgs.srv import ExecTask, ExecTaskRequest
 from woosh_msgs.msg import RobotStatus
@@ -79,6 +85,7 @@ class SocketDemo(Thread):
         self.dh5_client = rospy.ServiceProxy("/dh5/set_all_position",DH5SetPosition)
         self.vla_client = rospy.ServiceProxy("vla_service", VLAProcess)
         self.check_client = rospy.ServiceProxy("/aris_node/check_srv", CheckRunStatus)
+        self.play_moment_client = rospy.ServiceProxy("play_arm_movement", PlayArmMovement)
 
         self.seen_status_0 = False  # 标记是否见过状态0
         self.intent_state = False  # intent状态标志
@@ -732,9 +739,15 @@ class SocketDemo(Thread):
             rospy.sleep(2)
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task8.mp3",)).start()
         elif intent == "bianbao_hand":
+            # self.sentence_buffer.append_text("好的，没问题！")
             self.send_task("9")
             rospy.sleep(2)
-            Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9.mp3",)).start()
+            req = PlayArmMovementRequest()
+            req.rate = 18.0
+            self.play_moment_client.wait_for_service()
+            self.play_moment_client.call(req)
+            # self.play_arm_movement(rate=18.0)
+            # Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9.mp3",)).start()
         elif intent == "award_intro":
             self.send_task("10")
             rospy.sleep(2)

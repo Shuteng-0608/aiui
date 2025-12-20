@@ -31,6 +31,7 @@ class DH5TeleopSubscriber:
         只负责更新数据，不进行耗时操作
         """
         self.latest_msg = data
+        # rospy.loginfo("Received DualHandTele message")
 
     def control_loop(self, event):
         """

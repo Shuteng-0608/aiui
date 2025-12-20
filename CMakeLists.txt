@@ -68,6 +68,7 @@ add_service_files(
   IkOptService.srv
   TrajectoryService.srv
   CheckRunStatus.srv
+  PlayArmMovement.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -192,6 +193,8 @@ catkin_install_python(PROGRAMS
   scripts/woosh_exec_task.py
 
   scripts/keyboard_action.py
+
+  scripts/play_multi_service.py
   
   # hand_eye_calibration/hand_eye_calibration.py
   hand_eye_calibration/collect_data_ros.py

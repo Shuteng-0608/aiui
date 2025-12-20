@@ -21,13 +21,21 @@ class DH5ModbusAPI:
         self.parity = parity
         self.serial_connection = None
         # Left Pos Limit
+        # self.position_limits_left = [ 
+        #     [30, 851],
+        #     [10, 1683],
+        #     [30, 1699],
+        #     [30, 1681],
+        #     [10, 1683],
+        #     [30, 867],
+        # ]
         self.position_limits_left = [ 
-            [30, 851],
-            [10, 1683],
-            [30, 1699],
-            [30, 1681],
-            [10, 1683],
-            [30, 867],
+            [10, 868],
+            [10, 1701],
+            [10, 1693],
+            [10, 1690],
+            [10, 1689],
+            [10, 866],
         ]
         # Right Pos Limit
         # self.position_limits_right = [

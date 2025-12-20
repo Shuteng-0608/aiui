@@ -1,21 +1,5 @@
 <launch>
-    <!-- 启动 TTS PLAYER 节点 -->
-
-    <node 
-        pkg="aiui" 
-        type="aiui_tts_generator.py" 
-        name="tts_generator_service_node" 
-        output="screen"
-    />
-
-    <!-- 启动 TTS GENERATOR 节点 -->
-
-    <node 
-        pkg="aiui" 
-        type="aiui_tts_player.py" 
-        name="tts_player_service_node" 
-        output="screen"
-    />
+    <!-- 启动 -->
 
     <!-- 启动 TTS V2 节点 -->
 
@@ -26,21 +10,49 @@
         output="screen"
     />
 
+
+    <!-- 启动 DH5 Normal 节点 -->
+    
+    <node 
+        pkg="aiui" 
+        type="dh5_control_ros.py"
+        name="dh5_service_node" 
+        output="screen"
+    />
+
+    <!-- 启动 DH5 Teleop 节点 -->
+    
+    <node 
+        pkg="aiui" 
+        type="dh5_control_teleop.py"
+        name="dh5_service_teleop_node" 
+        output="screen"
+    />   
+
+    <!-- 启动 DH5 Teleop Subscriber for RosBag -->
+
+    <node 
+        pkg="aiui" 
+        type="dh5_teleop_sub.py"
+        name="dh5_teleop_subscriber_node" 
+        output="screen"
+    />
+
+    <!-- 启动 rosbag 动作回放结点 -->
+
+    <node 
+        pkg="aiui" 
+        type="play_multi_service.py"
+        name="rosbag_play_action_node" 
+        output="screen"
+    />
+
     <!-- 启动 VLM 节点 -->
     
     <node 
         pkg="aiui" 
         type="vlm_service_node.py"
         name="vlm_service_node" 
-        output="screen"
-    />
-
-    <!-- 启动 DH5 节点 -->
-    
-    <node 
-        pkg="aiui" 
-        type="dh5_control_ros.py"
-        name="dh5_service_node" 
         output="screen"
     />
 
