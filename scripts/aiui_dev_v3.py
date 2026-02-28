@@ -29,6 +29,7 @@ from aiui.srv import DH5SetPosition, DH5SetPositionRequest
 from aiui.srv import VLAProcess, VLAProcessRequest
 from aiui.srv import CheckRunStatus, CheckRunStatusRequest
 from aiui.srv import PlayArmMovement, PlayArmMovementResponse
+from aiui.srv import RecoverService, RecoverServiceRequest
 from arm_teleop.srv import StartDualTeleOP, StartDualTeleOPRequest
 from arm_teleop.msg import DualArmMovej, DualHandTele
 from woosh_msgs.msg import StepControlAction, StepControlGoal, StepControl
@@ -76,7 +77,7 @@ class SocketDemo(Thread):
                             "zhezhi_robot", "medical_robot", "award_intro",
                             "bianbao_hand", "chanxian", "project_intro",
                             "dabianbao_robot", "ruanti_robot", "bianbao_robot",
-                            "paper_intro", "lab_intro", "back_home"]
+                            "paper_intro", "lab_intro", "back_home", "recovery"]
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)
@@ -86,6 +87,8 @@ class SocketDemo(Thread):
         self.vla_client = rospy.ServiceProxy("vla_service", VLAProcess)
         self.check_client = rospy.ServiceProxy("/aris_node/check_srv", CheckRunStatus)
         self.play_moment_client = rospy.ServiceProxy("play_arm_movement", PlayArmMovement)
+
+        self.recover_client = rospy.ServiceProxy("/aris_node/recover_srv", RecoverService)
 
         self.seen_status_0 = False  # 标记是否见过状态0
         self.intent_state = False  # intent状态标志
@@ -101,6 +104,8 @@ class SocketDemo(Thread):
         self.active_audio_channel = None
         self.current_audio_stream = None
         self.active_audio_file = None
+        self.xgxg = False  # 控制实验室参观的标志
+        self.lab_tour = False  # 控制实验室参观的标志
 
         self.woosh_client = actionlib.SimpleActionClient('/cmd_vel_control', StepControlAction)
         self.timeout = 5
@@ -138,13 +143,13 @@ class SocketDemo(Thread):
         """机器人状态回调函数"""
         self.robot_status = msg
     
-    def wait_for_task_completion(self, timeout=60):
+    def wait_for_task_completion(self, mark_no="", timeout=60):
         """
         等待任务完成
         
         参数:
-        - timeout: 超时时间（秒），默认30秒
-        
+        - timeout: 超时时间（秒），默认60秒
+        - mark_no: 任务标识，默认空字符串
         返回:
         - True: 任务完成
         - False: 任务失败或超时
@@ -152,12 +157,23 @@ class SocketDemo(Thread):
         start_time = time.time()
         last_state = 7
         task_flag = 0
+        too_long = False
+        very_long = False
         
         while task_flag == 0:
+            if self.xgxg == True and self.lab_tour == True:
+                self.cancel_task(mark_no)
             # 检查超时
             if time.time() - start_time > timeout:
                 rospy.logerr(f"任务等待超时（{timeout}秒）")
+                self.cancel_task(mark_no)
                 return False
+            if time.time() - start_time > 30.0 and too_long == False and self.detected_intent == "bianbao_hand":
+                self.sentence_buffer.append_text("等我清清嗓子，摆个舒服的姿势再为您介绍！")
+                too_long = True
+            if time.time() - start_time > 45.0 and very_long == False and self.detected_intent == "bianbao_hand":
+                self.sentence_buffer.append_text("让您久等了，我继续为您介绍吧！")
+                very_long = True
             
             if self.robot_status is None:
                 rospy.logwarn("未收到机器人状态消息，等待中...")
@@ -258,24 +274,7 @@ class SocketDemo(Thread):
 
                 # 获取保存的音频文件名
                 file_name = "/home/pangu/pangu/src/aiui/tts_audio/" + resp.file_name
-                # try:
-                #     # 下载MP3文件
-                #     response = requests.get(file_url)
-                #     response.raise_for_status()  # 检查请求是否成功
-                    
-                #     # 保存临时文件
-                #     timestamp = int(time.time() * 1000)  # 毫秒级时间戳
-                #     temp_file = f"tts_{timestamp}.mp3"
-                #     # temp_file = "temp_tts.mp3"
-                #     with open(temp_file, 'wb') as f:
-                #         f.write(response.content)
-                    
-                #     # rospy.loginfo(f"已下载TTS音频到: {temp_file}")
-                # except Exception as e:
-                #     rospy.logerr(f"下载或播放音频时出错: {e}")
-
-                
-                
+            
                 # 将音频文件加入播放队列
                 if file_name:
                     self.audio_queue.put(file_name)
@@ -513,6 +512,24 @@ class SocketDemo(Thread):
             rospy.logerr("等待图像消息超时，请检查相机是否已启动")
         except Exception as e:
             rospy.logerr(f"发生错误: {str(e)}")
+    def labTour(self):
+        self.lab_tour = True
+        self.xgxg = False
+        greetings = [
+            "有什么我能帮到您的，尽管告诉我哦！",
+            "你好呀，很高兴见到您！",
+            "让我来为您介绍一下我们的实验室吧！",
+        ]
+        for i in [2,6,8,9,8,6,2]:
+            if self.xgxg == True:
+                break
+            self.send_task(str(i))
+            # 随机挑一句问候，避免重复感
+            self.sentence_buffer.append_text(random.choice(greetings))
+            rospy.sleep(0.5)
+        self.xgxg = False
+        self.lab_tour = False
+        # self.sentence_buffer.append_text("回到初始点位！")
 
     def handle_detected_intent(self, intent):
         
@@ -539,60 +556,16 @@ class SocketDemo(Thread):
                 Thread(target=self.arm_client.call, args=(req,), daemon=True).start()
         elif intent == "guolai":
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行过来动作")
-            self.woosh_mf(0.1, 0.1, True) 
+            self.woosh_mf(0.2, 0.1, True) 
         elif intent == "LabTour":
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行实验室参观动作")
-            self.sentence_buffer.append_text("好的，跟我来吧！")
+            self.sentence_buffer.append_text("好啊，我带你在实验室里逛一逛吧！")
+            Thread(target=self.labTour, daemon=True).start()
+            # self.sentence_buffer.append_text("有什么我能帮到您的，尽管告诉我哦！")
             # for i in range(2, 13):
             #    self.send_task(str(i))
             #    rospy.sleep(2)
-            self.send_task("2")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task2.mp3") 
-
-            self.send_task("3")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task3.mp3")
-
-            self.send_task("4")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task4.mp3")
-
-            self.send_task("5")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task5.mp3")
-
-            self.send_task("6")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task6.mp3") 
-
-            self.send_task("7")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task7.mp3")
-
-            self.send_task("8")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task8.mp3")
-
-            self.send_task("9")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task9.mp3")
-
-            self.send_task("10")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task10.mp3")
-
-            self.send_task("11")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task11.mp3")
-
-            self.send_task("12")
-            rospy.sleep(2)
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task12.mp3")
-
-            self.send_task("1")
-            self.play_existing_audio("/home/pangu/pangu/src/aiui/audio/task13.mp3")
-            self.sentence_buffer.append_text("回到初始点位！")
+            # self.sentence_buffer.append_text("回到初始点位！")
         elif intent == "Bow":
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行鞠躬欢送动作")
             self.sentence_buffer.append_text("哇时间过得好快, 再见喽，期待下次再和您见面，记得要常来看我哦！")
@@ -689,80 +662,117 @@ class SocketDemo(Thread):
             if resp.ros_run_flag is False:
                 Thread(target=self.arm_client.call, args=(arm_req,), daemon=True).start()
         elif intent == "Forward":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行前进动作")
             self.woosh_mf(0.2, 0.1)
         elif intent == "Backwards":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行后退动作")
             self.woosh_mf(-0.2, 0.1)
         elif intent == "Turnleft":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行左转动作")
             self.woosh_rotate(10)
         elif intent == "Turnright":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行右转动作")
             self.woosh_rotate(-10)
         elif intent == "Goleft":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行左移动作")
             self.woosh_rotate(90)
             self.woosh_mf(0.2, 0.1)
             self.woosh_rotate(-90)
         elif intent == "Goright":
+            self.sentence_buffer.append_text("好的，没问题！")
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行右移动作")
             self.woosh_rotate(-90)
             self.woosh_mf(0.2, 0.1)
             self.woosh_rotate(90)      
         elif intent == "lab_intro":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的研究院吧！")
             self.send_task("2")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task2.mp3",)).start()
         elif intent == "paper_intro":
+            self.sentence_buffer.append_text("好的，没问题！让我带您了解一下戴院士的著作！")
             self.send_task("3")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task3.mp3",)).start()
         elif intent == "bianbao_robot":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的变胞机器人吧！")
             self.send_task("4")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task4.mp3",)).start()
         elif intent == "ruanti_robot":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的软体机器人吧！")
             self.send_task("5")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task5.mp3",)).start()
         elif intent == "dabianbao_robot":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们第二代的多功能变胞机器人吧！")
             self.send_task("6")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task6.mp3",)).start()
         elif intent == "project_intro":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的研究项目吧！")
             self.send_task("7")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task7.mp3",)).start()
         elif intent == "chanxian":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的智能产线吧！")
             self.send_task("8")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task8.mp3",)).start()
         elif intent == "bianbao_hand":
-            # self.sentence_buffer.append_text("好的，没问题！")
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍我们实验室研发的变胞灵巧手吧！")
             self.send_task("9")
-            rospy.sleep(2)
+            # rospy.sleep(2)
             req = PlayArmMovementRequest()
             req.rate = 18.0
             self.play_moment_client.wait_for_service()
+            self.flush_all()
             self.play_moment_client.call(req)
             # self.play_arm_movement(rate=18.0)
             # Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9.mp3",)).start()
         elif intent == "award_intro":
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的研究成果与荣誉吧！")
             self.send_task("10")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task10.mp3",)).start()
         elif intent == "medical_robot": 
-            self.send_task("11")
-            rospy.sleep(2)
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的医疗机器人吧！")
+            self.send_task("12")
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task11.mp3",)).start()
         elif intent == "zhezhi_robot":
-            self.send_task("12")
-            rospy.sleep(2)
+            self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的折纸机器人吧！")
+            self.send_task("11")
+            # rospy.sleep(2)
+            self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task12.mp3",)).start()
         elif intent == "back_home":
+            self.sentence_buffer.append_text("那我先回去休息啦，期待下次再和您见面，记得要常来看我哦！")
             self.send_task("1")
-            rospy.sleep(2)
+            # rospy.sleep(2)
+        
+        elif intent == "recovery":
+            self.sentence_buffer.append_text("好的，没问题！让我先调整一下状态！")
+            recover_req = RecoverServiceRequest()
+            recover_req.recover = "recover"
+            self.recover_client.call(recover_req)
+            # Thread(target=self.recover_client.call, args=(recover_req,), daemon=True).start
+            
+
     
     # 替换原有的play_audio函数
     def enqueue_audio(self, file_path):
@@ -925,6 +935,37 @@ class SocketDemo(Thread):
             rospy.logerr(f"发送指令时发生错误: {e}")
             return False
     
+    def cancel_task(self, mark_no=""):
+        """
+        取消当前任务
+        """
+        try:
+            # 创建服务请求
+            req = ExecTaskRequest()
+            
+            req.task_exect = 4      # 取消任务
+            req.task_id = 0         # 任务id
+            req.task_type = 1       # 拣选
+            req.direction = 0       # 动作方向
+            req.task_type_no = 0    # 组合类型默认0
+            req.mark_no = mark_no        # 储位编号
+            
+            rospy.loginfo("取消当前任务")
+            response = self.exec_task_client.call(req)
+            
+            # 处理响应
+            if response.success:
+                rospy.loginfo(f"任务取消成功: {response.message}")
+            else:
+                rospy.logwarn(f"任务取消失败: {response.message}")
+                rospy.logwarn(f"状态码: {response.statusCode}")
+            
+            return response
+            
+        except rospy.ServiceException as e:
+            rospy.logerr(f"服务调用异常: {e}")
+            return None
+    
     def send_task(self, mark_no):
         """
         发送任务，只包含task_id和mark_no
@@ -953,7 +994,7 @@ class SocketDemo(Thread):
                 rospy.loginfo(f"任务执行成功: {response.message}")
                 # 等待任务完成
                 rospy.loginfo("开始监听任务执行状态...")
-                task_completed = self.wait_for_task_completion()
+                task_completed = self.wait_for_task_completion(mark_no)
                 
                 if task_completed:
                     rospy.loginfo("任务执行成功完成")
@@ -1121,18 +1162,22 @@ class SocketDemo(Thread):
                         if data.get('content', {}).get('eventType', {}) == 5:
                             self.wakeup_state = False
                             rospy.loginfo(f"进入休眠状态：==== 我不在 ==== ")
+                            self.xgxg = False
                             self.flush_all()  # 清空之前的缓冲区
                             self.sentence_buffer.append_text("我先退下啦！")
                         
                         if data.get('content', {}).get('eventType', {}) == 1:
-                            if data.get('content', {}).get('result', {}).get('ivw_result', {}).get('keyword', {}) == "xiao3 gu3 xiao3 gu3":
+                            key_ward = data.get('content', {}).get('result', {}).get('ivw_result', {}).get('keyword', {})
+                            if key_ward == "xiao3 gu3 xiao3 gu3" or key_ward == "pan2 gu3 pan2 gu3" or key_ward == "xiao3 hu3 xiao3 hu3":
                                 # rospy.loginfo(f"检测到小鼓小鼓唤醒词")
                                 try:
                                     angle = data.get('content', {}).get('result', {}).get('ivw_result', {}).get('angle', {})
                                     rospy.loginfo(f"唤醒词角度: {angle}")
+                                    rospy.loginfo(f"唤醒完整消息: {result.decode('utf-8')}")
                                     if angle is not None:
                                         rospy.loginfo(f"声源定位: {angle}")
                                         rospy.loginfo(f"唤醒成功：==== 我在 ==== ")
+                                        self.xgxg = True
                                         self.flush_all()  # 清空之前的缓冲区
                                         self.sentence_buffer.append_text("我在。")
                                         self.woosh_rotate(float(angle), mode='wake_up')

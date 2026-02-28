@@ -95,7 +95,7 @@ def play_arm_movement(rate=1.0):
     tele_req.running_flag = True
     tele_response = start_teleop_service.call(tele_req)
 
-    threading.Thread(target=play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9.mp3",), daemon=True).start()
+    threading.Thread(target=play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9_v2.mp3",), daemon=True).start()
     scale = 1.1
     act_play(bag0, rate * scale)
     act_play(bag1, rate * scale)

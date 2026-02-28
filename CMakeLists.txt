@@ -69,6 +69,7 @@ add_service_files(
   TrajectoryService.srv
   CheckRunStatus.srv
   PlayArmMovement.srv
+  RecoverService.srv
 )
 
 ## Generate actions in the 'action' folder

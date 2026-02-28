@@ -1,0 +1,4 @@
+# RecoverService.srv
+string recover
+---
+bool success

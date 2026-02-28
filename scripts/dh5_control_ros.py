@@ -640,8 +640,22 @@ if __name__ == '__main__':
     
     api_r = DH5ModbusAPI(port='/dev/ttyUSB0', baud_rate=115200)
     rospy.loginfo(f"[RIGHT HAND Connection]: {'SUCCESS' if api_r.open_connection() == 0 else 'FAILED'}")
+
+    api_r.restart_system()
+    api_r.reset_faults()
+
+
     rospy.loginfo(f"[RIGHT HAND Initialization]: {api_r.initialize(0b10)}")
     rospy.loginfo(api_r.check_initialization())
+
+    # r_state = api_r.get_all_feedback()
+    # r_parsed_data = api_r.parse_axis_state(r_state)
+    # print("RIGHT 运行状态:", r_parsed_data['state'])
+    # print("RIGHT 当前位置:", r_parsed_data['position'])
+    # print("RIGHT 运行速度:", r_parsed_data['speed'])
+    # print("RIGHT 当前电流:", r_parsed_data['current'])
+    # print("RIGHT 当前故障", api_r.get_cur_faults())
+    # print("RIGHT 历史故障", api_r.get_history_faults())
 
     rospy.on_shutdown(shutdown_hook)
 

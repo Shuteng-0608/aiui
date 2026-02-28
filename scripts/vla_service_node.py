@@ -24,7 +24,7 @@ class VLAServiceServer:
         # 初始化CV桥接器
         self.bridge = CvBridge()
         # API配置
-        self.api_url = rospy.get_param('~api_url', 'http://172.18.35.200:50002/process_image')
+        self.api_url = rospy.get_param('~api_url', 'http://172.18.36.110:50002/process_image')
         # 初始化服务
         self.service = rospy.Service('vla_service', VLAProcess, self.handle_vla_request)
         self.intr = {
