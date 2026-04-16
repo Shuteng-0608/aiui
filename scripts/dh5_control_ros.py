@@ -50,12 +50,12 @@ class DH5ModbusAPI:
         #     [30, 981],
         # ]
         self.position_limits_right = [
-            [10, 873],
-            [10, 1686],
-            [10, 1686],
-            [10, 1690],
-            [10, 1692],
-            [10, 873],
+            [10, 877],
+            [10, 1688],
+            [10, 1689],
+            [10, 1691],
+            [10, 1693],
+            [10, 875],
         ]
         
         # Error_compensation: ERR_GAIN = LEFT - RIGHT
@@ -525,7 +525,7 @@ class DH5ModbusAPI:
     def gripper(self, state):
         if state == "open":
             # == OPEN == #
-            result = self.set_all([930, 1770, 1707, 1730, 1730, 980], speed_list=[30, 30, 30, 30, 30, 30])
+            result = self.set_all([873, 1770, 1707, 1730, 1730, 980], speed_list=[30, 30, 30, 30, 30, 30])
         elif state == "close":
             # == CLOSE == #
             result = self.set_all([300, 500, 500, 500, 500, 200], speed_list=[100, 30, 30, 30, 30, 30])

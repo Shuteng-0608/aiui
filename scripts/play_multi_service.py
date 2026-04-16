@@ -96,7 +96,7 @@ def play_arm_movement(rate=1.0):
     tele_response = start_teleop_service.call(tele_req)
 
     threading.Thread(target=play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task9_v2.mp3",), daemon=True).start()
-    scale = 1.1
+    scale = 1.1  # 1.1倍速
     act_play(bag0, rate * scale)
     act_play(bag1, rate * scale)
     # rospy.sleep(1)
@@ -113,7 +113,7 @@ def play_arm_movement(rate=1.0):
     act_play(bag7, 17.0 * scale)
     
     # rospy.loginfo("播放完成，双臂 %d 条，双手 %d 条", arm_msg_count, hand_msg_count)
-    rospy.sleep(1)  # 确保所有消息发布完成 before stopping teleop
+    rospy.sleep(10)  # 确保所有消息发布完成 before stopping teleop
     tele_req = StartDualTeleOPRequest()
     tele_req.running_flag = False
     tele_response = start_teleop_service.call(tele_req)

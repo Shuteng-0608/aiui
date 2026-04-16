@@ -47,12 +47,12 @@ class DH5ModbusAPI:
         #     [30, 981],
         # ]
         self.position_limits_right = [
-            [10, 873],
-            [10, 1686],
-            [10, 1686],
-            [10, 1690],
-            [10, 1692],
-            [10, 873],
+            [10, 877],
+            [10, 1688],
+            [10, 1689],
+            [10, 1691],
+            [10, 1693],
+            [10, 875],
         ]
         
         # Error_compensation: ERR_GAIN = LEFT - RIGHT
@@ -579,22 +579,24 @@ if __name__ == '__main__':
     # print(api_r.initialize_axis(1, 0b11))
     # api_r.restart_system()
     # api_r.reset_faults()
-    # print(api_r.initialize(0b10))
-    # time.sleep(5)
-    # print(api_r.check_initialization())
+    print(api_r.initialize(0b10))
+    time.sleep(5)
+    print(api_r.check_initialization())
 
     # time.sleep(3)
 
     r_state = api_r.get_all_feedback()
-    # r_parsed_data = api_r.parse_axis_state(r_state)
-    print("RIGHT 运行状态:", r_state)
+    # r_pos = api_r.get_all_position()
+    r_parsed_data = api_r.parse_axis_state(r_state)
+    # print("RIGHT 运行状态:", r_state)
+    # print("RIGHT 当前位置:", r_pos)
     # print(r_state)
-    # print("RIGHT 运行状态:", r_parsed_data['state'])
-    # print("RIGHT 当前位置:", r_parsed_data['position'])
-    # print("RIGHT 运行速度:", r_parsed_data['speed'])
-    # print("RIGHT 当前电流:", r_parsed_data['current'])
-    # print("RIGHT 当前故障", api_r.get_cur_faults())
-    # print("RIGHT 历史故障", api_r.get_history_faults())
+    print("RIGHT 运行状态:", r_parsed_data['state'])
+    print("RIGHT 当前位置:", r_parsed_data['position'])
+    print("RIGHT 运行速度:", r_parsed_data['speed'])
+    print("RIGHT 当前电流:", r_parsed_data['current'])
+    print("RIGHT 当前故障", api_r.get_cur_faults())
+    print("RIGHT 历史故障", api_r.get_history_faults())
 
     l_state = api_l.get_all_feedback()
     l_parsed_data = api_l.parse_axis_state(l_state)

@@ -196,6 +196,7 @@ catkin_install_python(PROGRAMS
   scripts/keyboard_action.py
 
   scripts/play_multi_service.py
+  scripts/plot.py
   
   # hand_eye_calibration/hand_eye_calibration.py
   hand_eye_calibration/collect_data_ros.py

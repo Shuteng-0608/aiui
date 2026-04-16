@@ -77,7 +77,7 @@ class SocketDemo(Thread):
                             "zhezhi_robot", "medical_robot", "award_intro",
                             "bianbao_hand", "chanxian", "project_intro",
                             "dabianbao_robot", "ruanti_robot", "bianbao_robot",
-                            "paper_intro", "lab_intro", "back_home", "recovery"]
+                            "paper_intro", "lab_intro", "back_home", "recovery", "jianxiu"]
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)
@@ -647,7 +647,7 @@ class SocketDemo(Thread):
             rospy.loginfo(f"检测到 [{intent}] 意图, 执行比心动作")
             self.sentence_buffer.append_text("南科大爱你呦！啾咪啾咪！")
             arm_req = StringServiceRequest()
-            arm_req.request = random.choice([12, 13])
+            arm_req.request = random.choice([13])
             # self.arm_client.wait_for_service()
             resp = self.check_client.call(CheckRunStatusRequest())
             if resp.ros_run_flag is False:
@@ -767,10 +767,17 @@ class SocketDemo(Thread):
         
         elif intent == "recovery":
             self.sentence_buffer.append_text("好的，没问题！让我先调整一下状态！")
-            recover_req = RecoverServiceRequest()
-            recover_req.recover = "recover"
-            self.recover_client.call(recover_req)
-            # Thread(target=self.recover_client.call, args=(recover_req,), daemon=True).start
+            cmd_req = RecoverServiceRequest()
+            cmd_req.cmd = "recover"
+            self.recover_client.call(cmd_req)
+            # Thread(target=self.recover_client.call, args=(cmd_req,), daemon=True).start
+        
+        elif intent == "jianxiu":
+            self.sentence_buffer.append_text("好的，没问题！让我先调整一下状态！")
+            cmd_req = RecoverServiceRequest()
+            cmd_req.cmd = "maintain"
+            self.recover_client.call(cmd_req)
+            # Thread(target=self.recover_client.call, args=(cmd_req,), daemon=True).start
             
 
     

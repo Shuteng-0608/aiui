@@ -1,4 +1,4 @@
 # RecoverService.srv
-string recover
+string cmd
 ---
 bool success
