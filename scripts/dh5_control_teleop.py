@@ -273,10 +273,10 @@ class DH5ModbusAPI:
             if axis < 1 or axis > 6:
                 return self.ERROR_INVALID_COMMAND
         register_address = 0x0101
-        if self.port == '/dev/ttyUSB0':
+        if self.port == '/dev/ttyUSB1':
             # Right hand
             position_list = self.clamp_list(position_list, self.position_limits_right)
-        if self.port == '/dev/ttyUSB1':
+        if self.port == '/dev/ttyUSB0':
             # Left hand
             position_list = self.err_comp(position_list, self.gain_err)
             position_list = self.clamp_list(position_list, self.position_limits_left)
@@ -372,10 +372,10 @@ class DH5ModbusAPI:
         force_register_address = 0x0107
         speed_register_address = 0x010D
         acc_register_address = 0x0113
-        if self.port == '/dev/ttyUSB0':
+        if self.port == '/dev/ttyUSB1':
             # Right hand
             position_list = self.clamp_list(position_list, self.position_limits_right)
-        if self.port == '/dev/ttyUSB1':
+        if self.port == '/dev/ttyUSB0':
             # Left hand
             position_list = self.clamp_list(self.err_comp(position_list, self.gain_err), self.position_limits_left)
         complete_list = position_list + force_list + speed_list + acc_list
@@ -626,7 +626,7 @@ if __name__ == '__main__':
 
     #### Left Hand Initialization #### ttyUSB1
    
-    api_l = DH5ModbusAPI(port='/dev/ttyUSB1', baud_rate=115200)
+    api_l = DH5ModbusAPI(port='/dev/ttyUSB0', baud_rate=115200)
     rospy.loginfo(f"[LEFT HAND Connection]: {'SUCCESS' if api_l.open_connection() == 0 else 'FAILED'}")
     rospy.loginfo(f"[LEFT HAND Initialization]: {api_l.initialize(0b10)}")
     rospy.loginfo(api_l.check_initialization())
@@ -634,7 +634,7 @@ if __name__ == '__main__':
 
     #### Right Hand Initialization #### ttyUSB0
     
-    api_r = DH5ModbusAPI(port='/dev/ttyUSB0', baud_rate=115200)
+    api_r = DH5ModbusAPI(port='/dev/ttyUSB1', baud_rate=115200)
     rospy.loginfo(f"[RIGHT HAND Connection]: {'SUCCESS' if api_r.open_connection() == 0 else 'FAILED'}")
     rospy.loginfo(f"[RIGHT HAND Initialization]: {api_r.initialize(0b10)}")
     rospy.loginfo(api_r.check_initialization())

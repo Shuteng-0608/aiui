@@ -77,7 +77,7 @@ class SocketDemo(Thread):
                             "zhezhi_robot", "medical_robot", "award_intro",
                             "bianbao_hand", "chanxian", "project_intro",
                             "dabianbao_robot", "ruanti_robot", "bianbao_robot",
-                            "paper_intro", "lab_intro", "back_home", "recovery", "jianxiu"]
+                            "paper_intro", "lab_intro", "back_home", "recovery", "jianxiu", "playvedio"]
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)

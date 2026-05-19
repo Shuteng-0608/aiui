@@ -149,11 +149,13 @@ class TTS_ROS_Server:
         data = {
             "header": {
                 "app_id": appid,
-                "uid": "7f40c8462073c0911f696ae5577b2971",
+                # "uid": "7f40c8462073c0911f696ae5577b2971",
+                "uid": "767542a2b7ee7fe51c850202c3685332",
                 "stmid": "text-1",
                 "status": 3,
                 "scene": scene,
-                "sn": "7f40c8462073c0911f696ae5577b2971"
+                # "sn": "7f40c8462073c0911f696ae5577b2971",
+                "sn": "767542a2b7ee7fe51c850202c3685332",
             },
             "parameter": {
                 "tts": {

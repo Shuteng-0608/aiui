@@ -505,7 +505,7 @@ class DH5ModbusAPI:
             gesture_name = random.choice(list(gesture_list.keys()))
             self.perform(gesture_name)
             print(f"Perform {j}: {gesture_name}")
-            time.sleep(0.5)
+            # time.sleep(0.5)
 
 
 def sync_demo():
@@ -606,6 +606,10 @@ if __name__ == '__main__':
     print("LEFT 当前电流:", l_parsed_data['current'])
     print("LEFT 当前故障", api_l.get_cur_faults())
     print("LEFT 历史故障", api_l.get_history_faults())
+
+
+    # api_r.set_all_position(gesture_list["FIVE"])
+    sync_demo()
    
 
 

@@ -100,7 +100,7 @@ def play_arm_movement(rate=1.0):
     act_play(bag0, rate * scale)
     act_play(bag1, rate * scale)
     # rospy.sleep(1)
-    act_play(bag2, rate * scale)
+    act_play(bag2, rate * scale) # tieban
     # rospy.sleep(1)
     act_play(bag3, 12.0 * scale)
     rospy.sleep(2)
@@ -108,12 +108,12 @@ def play_arm_movement(rate=1.0):
     # rospy.sleep(1)
     act_play(bag5, 19.0 * scale)
     # rospy.sleep(1)
-    act_play(bag6, rate * scale)
+    act_play(bag6, rate * scale) # 
     # rospy.sleep(1)
-    act_play(bag7, 17.0 * scale)
+    act_play(bag7, 17.0 * scale) # guo
     
     # rospy.loginfo("播放完成，双臂 %d 条，双手 %d 条", arm_msg_count, hand_msg_count)
-    rospy.sleep(10)  # 确保所有消息发布完成 before stopping teleop
+    rospy.sleep(2)  # 确保所有消息发布完成 before stopping teleop
     tele_req = StartDualTeleOPRequest()
     tele_req.running_flag = False
     tele_response = start_teleop_service.call(tele_req)
