@@ -30,6 +30,8 @@ from aiui.srv import VLAProcess, VLAProcessRequest
 from aiui.srv import CheckRunStatus, CheckRunStatusRequest
 from aiui.srv import PlayArmMovement, PlayArmMovementResponse
 from aiui.srv import RecoverService, RecoverServiceRequest
+from std_srvs.srv import Trigger, TriggerResponse, TriggerRequest
+
 from arm_teleop.srv import StartDualTeleOP, StartDualTeleOPRequest
 from arm_teleop.msg import DualArmMovej, DualHandTele
 from woosh_msgs.msg import StepControlAction, StepControlGoal, StepControl
@@ -77,7 +79,7 @@ class SocketDemo(Thread):
                             "zhezhi_robot", "medical_robot", "award_intro",
                             "bianbao_hand", "chanxian", "project_intro",
                             "dabianbao_robot", "ruanti_robot", "bianbao_robot",
-                            "paper_intro", "lab_intro", "back_home", "recovery", "jianxiu", "playvideo"]
+                            "paper_intro", "lab_intro", "back_home", "recovery", "jianxiu", "playvideo", "shutup"]
 
         self.arm_client = rospy.ServiceProxy("aris_node/cmd_str_srv",StringService)
         self.vlm_client = rospy.ServiceProxy("vlm_service",VLMProcess)
@@ -87,6 +89,7 @@ class SocketDemo(Thread):
         self.vla_client = rospy.ServiceProxy("vla_service", VLAProcess)
         self.check_client = rospy.ServiceProxy("/aris_node/check_srv", CheckRunStatus)
         self.play_moment_client = rospy.ServiceProxy("play_arm_movement", PlayArmMovement)
+        self.sleep_client = rospy.ServiceProxy("/aiui/sleep_control", Trigger)
 
         self.recover_client = rospy.ServiceProxy("/aris_node/recover_srv", RecoverService)
 
@@ -612,11 +615,17 @@ class SocketDemo(Thread):
             self.sentence_buffer.append_text("我是南科盘古，")
 
             self.sentence_buffer.append_text("由南方科技大学机器人研究院研发的首款人形机器人，")
-            self.sentence_buffer.append_text("也是深圳地区首个完全由高校独立研制的人形机器人，")
-            self.sentence_buffer.append_text("我具有高度拟人化的手臂,")
-            self.sentence_buffer.append_text("搭载多模态大模型，")
-            self.sentence_buffer.append_text("能够进行多模式智能交互，")
+            self.sentence_buffer.append_text("我具备多模态感知与认知能力，能够在复杂环境中实现自主导航，")
+            self.sentence_buffer.append_text("语义理解与双臂协同精细操作。")
+            self.sentence_buffer.append_text("目前我正在攻关基于语义理解的自主抓取与复杂操作功能,")
+            self.sentence_buffer.append_text("致力于成为面向智能制造与服务场景的操作执行型具身智能体。")
             self.sentence_buffer.append_text("很高兴认识您！")
+            """
+            大家好，我是南科盘古，南方科技大学机器人研究院自主研发的首款人形机器人。
+            我具备多模态感知与认知能力，能够在复杂环境中实现自主导航、
+            语义理解与双臂协同精细操作。目前我正在攻关基于语义理解的自主抓取与复杂操作功能，
+            致力于成为面向智能制造与服务场景的操作执行型具身智能体。
+            """
             
             # req = StringServiceRequest()
             # req.request = '2' # TODO
@@ -781,19 +790,19 @@ class SocketDemo(Thread):
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task10.mp3",)).start()
         elif intent == "medical_robot": 
             self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的医疗机器人吧！")
-            self.send_task("12")
+            self.send_task("11")
             # rospy.sleep(2)
             self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task11.mp3",)).start()
         elif intent == "zhezhi_robot":
             self.sentence_buffer.append_text("好的，没问题！让我来为您介绍一下我们的折纸机器人吧！")
-            self.send_task("11")
+            self.send_task("22")
             # rospy.sleep(2)
             self.flush_all()
             Thread(target=self.play_existing_audio, args=("/home/pangu/pangu/src/aiui/audio/task12.mp3",)).start()
         elif intent == "back_home":
             self.sentence_buffer.append_text("那我先回去休息啦，期待下次再和您见面，记得要常来看我哦！")
-            self.send_task("1")
+            self.send_task("12")
             # rospy.sleep(2)
         
         elif intent == "recovery":
@@ -821,6 +830,14 @@ class SocketDemo(Thread):
                 args=(video_path,),
                 daemon=True
             ).start()
+
+        elif intent == "shutup":
+            msg = TriggerRequest()
+            self.sleep_client.call(msg)
+            self.flush_all()
+            self.seen_status_0 = False  # 重置状态标志
+            rospy.loginfo(f"检测到 [{intent}] 意图, 执行安静动作")
+
     
             
 
@@ -1258,9 +1275,9 @@ class SocketDemo(Thread):
                             self.get_iat_result(data)
 
                         elif (self.aiui_type == "nlp"):
-                            Thread(target=self.get_nlp_result, args=(data,), daemon=True).start()
-                            # self.get_nlp_result(data)
-
+                            # Thread(target=self.get_nlp_result, args=(data,), daemon=True).start()
+                            self.get_nlp_result(data)
+# 
                         elif (self.aiui_type == "cbm_semantic"):
                             self.get_intent_result(data)
 

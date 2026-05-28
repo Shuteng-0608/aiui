@@ -22,12 +22,12 @@
 
     <!-- 启动 DH5 Teleop 节点 -->
     
-    <node 
+    <!-- <node 
         pkg="aiui" 
         type="dh5_control_teleop.py"
         name="dh5_service_teleop_node" 
         output="screen"
-    />   
+    />    -->
 
     <!-- 启动 DH5 Teleop Subscriber for RosBag -->
 
