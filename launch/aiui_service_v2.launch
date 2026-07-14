@@ -22,12 +22,12 @@
 
     <!-- 启动 DH5 Teleop 节点 -->
     
-    <!-- <node 
+    <node 
         pkg="aiui" 
         type="dh5_control_teleop.py"
         name="dh5_service_teleop_node" 
         output="screen"
-    />    -->
+    />   
 
     <!-- 启动 DH5 Teleop Subscriber for RosBag -->
 
@@ -68,6 +68,12 @@
     <!-- 启动 OrbbecSDK_ROS1 节点 -->
     <include file="$(find orbbec_camera)/launch/gemini_330_series.launch"/>
 
-    
+    <node pkg="aiui" type="aiui_device_check.py" name="aiui_device_health" output="screen">
+        <param name="aiui_ip" value="192.168.8.206" />
+        <param name="semantic_port" value="19199" />
+        <param name="video_port" value="9090" />
+        <param name="audio_port" value="9080" />
+        <param name="max_frame_age" value="5.0" />
+    </node>
     
 </launch>

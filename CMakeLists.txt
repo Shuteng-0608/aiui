@@ -182,6 +182,7 @@ catkin_install_python(PROGRAMS
   scripts/aiui_tts_service.py
   scripts/aiui_tts_v2_service.py
   scripts/aiui_sleep_controller.py
+  scripts/aiui_device_check.py
 
   scripts/vlm_service_node.py
   scripts/vla_service_node.py
